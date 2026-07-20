@@ -53,10 +53,16 @@ function submit() {
                 role="alert"
                 class="mt-8 rounded-xl border-2 border-[var(--ni-gray)] bg-[var(--ni-gray-lightest)] p-5"
             >
-                <h2 class="font-semibold">There is a problem with your submission</h2>
+                <h2 class="font-semibold">
+                    There is a problem with your submission
+                </h2>
                 <ul class="mt-2 list-inside list-disc text-sm">
                     <li v-for="[field, message] in errorEntries" :key="field">
-                        <a :href="`#${field}`" class="underline underline-offset-2">{{ message }}</a>
+                        <a
+                            :href="`#${field}`"
+                            class="underline underline-offset-2"
+                            >{{ message }}</a
+                        >
                     </li>
                 </ul>
             </div>
@@ -67,7 +73,8 @@ function submit() {
                 role="status"
                 class="mt-8 rounded-xl bg-[var(--ni-green)] p-5 font-medium text-[var(--ni-gray)]"
             >
-                Thank you — your message has been sent. We will get back to you soon.
+                Thank you — your message has been sent. We will get back to you
+                soon.
             </p>
 
             <form class="mt-8 space-y-6" novalidate @submit.prevent="submit">
@@ -81,16 +88,24 @@ function submit() {
                         autocomplete="name"
                         required
                         :aria-invalid="form.errors.name ? 'true' : undefined"
-                        :aria-describedby="form.errors.name ? 'name-error' : undefined"
+                        :aria-describedby="
+                            form.errors.name ? 'name-error' : undefined
+                        "
                         class="mt-2 w-full rounded-lg border border-[var(--ni-gray-lighter)] px-4 py-3"
                     />
-                    <p v-if="form.errors.name" id="name-error" class="mt-2 text-sm font-medium">
+                    <p
+                        v-if="form.errors.name"
+                        id="name-error"
+                        class="mt-2 text-sm font-medium"
+                    >
                         {{ form.errors.name }}
                     </p>
                 </div>
 
                 <div>
-                    <label for="email" class="block font-medium">Email address</label>
+                    <label for="email" class="block font-medium"
+                        >Email address</label
+                    >
                     <input
                         id="email"
                         v-model="form.email"
@@ -99,18 +114,30 @@ function submit() {
                         autocomplete="email"
                         required
                         :aria-invalid="form.errors.email ? 'true' : undefined"
-                        :aria-describedby="form.errors.email ? 'email-error' : undefined"
+                        :aria-describedby="
+                            form.errors.email ? 'email-error' : undefined
+                        "
                         class="mt-2 w-full rounded-lg border border-[var(--ni-gray-lighter)] px-4 py-3"
                     />
-                    <p v-if="form.errors.email" id="email-error" class="mt-2 text-sm font-medium">
+                    <p
+                        v-if="form.errors.email"
+                        id="email-error"
+                        class="mt-2 text-sm font-medium"
+                    >
                         {{ form.errors.email }}
                     </p>
                 </div>
 
                 <div>
-                    <label for="message" class="block font-medium">Message</label>
-                    <p id="message-hint" class="mt-1 text-sm text-[var(--ni-gray-light)]">
-                        A few sentences about what you need — at least 10 characters.
+                    <label for="message" class="block font-medium"
+                        >Message</label
+                    >
+                    <p
+                        id="message-hint"
+                        class="mt-1 text-sm text-[var(--ni-gray-light)]"
+                    >
+                        A few sentences about what you need — at least 10
+                        characters.
                     </p>
                     <textarea
                         id="message"
@@ -119,10 +146,18 @@ function submit() {
                         rows="6"
                         required
                         :aria-invalid="form.errors.message ? 'true' : undefined"
-                        :aria-describedby="form.errors.message ? 'message-hint message-error' : 'message-hint'"
+                        :aria-describedby="
+                            form.errors.message
+                                ? 'message-hint message-error'
+                                : 'message-hint'
+                        "
                         class="mt-2 w-full rounded-lg border border-[var(--ni-gray-lighter)] px-4 py-3"
                     />
-                    <p v-if="form.errors.message" id="message-error" class="mt-2 text-sm font-medium">
+                    <p
+                        v-if="form.errors.message"
+                        id="message-error"
+                        class="mt-2 text-sm font-medium"
+                    >
                         {{ form.errors.message }}
                     </p>
                 </div>

@@ -22,16 +22,23 @@ defineProps<{
     <PublicLayout>
         <article class="mx-auto max-w-3xl px-6 py-16">
             <p>
-                <Link href="/blog" class="text-sm font-medium underline underline-offset-4">
+                <Link
+                    href="/blog"
+                    class="text-sm font-medium underline underline-offset-4"
+                >
                     ← All articles
                 </Link>
             </p>
 
             <header class="mt-6">
-                <h1 class="text-4xl font-bold leading-tight">{{ post.title }}</h1>
+                <h1 class="text-4xl leading-tight font-bold">
+                    {{ post.title }}
+                </h1>
                 <p class="mt-4 text-[var(--ni-gray-light)]">
                     By {{ post.author }} ·
-                    <time :datetime="post.published_at">{{ post.published_human }}</time>
+                    <time :datetime="post.published_at">{{
+                        post.published_human
+                    }}</time>
                 </p>
             </header>
 
