@@ -35,3 +35,6 @@ yarn-error.log
 /public/images/carnet-*.svg
 /public/images/yoat-*.svg
 /public/images/cms-*.svg
+/public/images/logo.svg
+/public/images/logo-light.svg
+/public/favicon.svg

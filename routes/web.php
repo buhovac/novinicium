@@ -18,6 +18,9 @@ Route::get('/portfolio/{project:slug}', [PortfolioController::class, 'show'])->n
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
+Route::inertia('/privacy', 'Privacy')->name('privacy');
+Route::inertia('/accessibility', 'Accessibility')->name('accessibility');
+
 // Kit routes preserved as-is:
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');

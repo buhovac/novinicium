@@ -23,11 +23,27 @@ const navItems = [
     { title: 'Contact', href: '/contact' },
 ];
 
+const legalItems = [
+    { title: 'Privacy', href: '/privacy' },
+    { title: 'Accessibility', href: '/accessibility' },
+];
+
 /** aria-current="page" for the active section (exact for home, prefix otherwise). */
 function isCurrent(href: string): boolean {
     const url = page.url;
 
     return href === '/' ? url === '/' : url.startsWith(href);
+}
+
+/** If the real (gitignored) logo isn't on disk, fall back to the repo placeholder. */
+function onLogoError(event: Event, fallback: string): void {
+    const img = event.target as HTMLImageElement;
+
+    if (img.src.endsWith(fallback)) {
+        return;
+    } // avoid loop if placeholder also missing
+
+    img.src = fallback;
 }
 
 // ---------- Mobile menu ----------
@@ -56,15 +72,14 @@ onUnmounted(() => removeNavigateListener?.());
                     class="flex items-center gap-2.5"
                     aria-label="Nov Inicium — home"
                 >
-                    <span
-                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--ni-green)] text-lg font-bold text-[var(--ni-gray)]"
-                        aria-hidden="true"
-                    >
-                        NI
-                    </span>
-                    <span class="text-lg font-semibold tracking-tight"
-                        >Nov Inicium</span
-                    >
+                    <img
+                        src="/images/logo.svg"
+                        alt="Nov Inicium"
+                        class="h-9 w-auto"
+                        @error="
+                            onLogoError($event, '/images/logo-placeholder.svg')
+                        "
+                    />
                 </Link>
 
                 <!-- Desktop navigation -->
@@ -166,12 +181,22 @@ onUnmounted(() => removeNavigateListener?.());
             <slot />
         </main>
 
-        <footer class="bg-dark mt-20 bg-[var(--ni-gray)] text-white">
+        <footer class="bg-dark bg-[var(--ni-gray)] text-white">
             <div
                 class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 py-10 sm:flex-row sm:items-center"
             >
                 <div>
-                    <p class="font-semibold">{{ site.footer_title }}</p>
+                    <img
+                        src="/images/logo-light.svg"
+                        alt="Nov Inicium"
+                        class="h-8 w-auto"
+                        @error="
+                            onLogoError(
+                                $event,
+                                '/images/logo-light-placeholder.svg',
+                            )
+                        "
+                    />
                     <p class="mt-1 text-sm text-[var(--ni-gray-lightest)]">
                         {{ site.footer_text }}
                     </p>
@@ -179,6 +204,14 @@ onUnmounted(() => removeNavigateListener?.());
                 <nav aria-label="Footer navigation">
                     <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
                         <li v-for="item in navItems" :key="item.href">
+                            <Link
+                                :href="item.href"
+                                class="on-dark underline underline-offset-4 hover:text-[var(--ni-green)]"
+                            >
+                                {{ item.title }}
+                            </Link>
+                        </li>
+                        <li v-for="item in legalItems" :key="item.href">
                             <Link
                                 :href="item.href"
                                 class="on-dark underline underline-offset-4 hover:text-[var(--ni-green)]"
