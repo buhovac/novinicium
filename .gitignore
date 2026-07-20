@@ -29,3 +29,9 @@ yarn-error.log
 /.zed
 /storage/app/public/*
 *.bak
+
+# Real content images live on the server only
+/public/images/blog-*.svg
+/public/images/carnet-*.svg
+/public/images/yoat-*.svg
+/public/images/cms-*.svg
