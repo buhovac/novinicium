@@ -142,6 +142,47 @@ const lastUpdated = 'July 2026'; // EDIT-ME: update when the policy changes
                         >).
                     </p>
                 </section>
+                <section aria-labelledby="edubba-app">
+                    <h2
+                        id="edubba-app"
+                        class="mt-10 mb-4 text-2xl font-semibold"
+                    >
+                        Edubba Tablet apps (mobile)
+                    </h2>
+                    <p>
+                        Nov Inicium SRL also publishes the Edubba Tablet apps —
+                        offline quiz apps on Google Play, starting with Edubba
+                        Tablet PY. Everything below applies to all of them.
+                    </p>
+
+                    <h3 class="mt-6 mb-2 text-lg font-semibold">
+                        What we collect
+                    </h3>
+                    <p>
+                        Nothing. The Edubba Tablet apps work entirely offline.
+                        They don't ask you to create an account, don't connect
+                        to the internet, and don't use analytics or advertising
+                        trackers of any kind.
+                    </p>
+
+                    <h3 class="mt-6 mb-2 text-lg font-semibold">
+                        Where your data lives
+                    </h3>
+                    <p>
+                        Your quiz progress — which levels you've completed, your
+                        scores — is stored only on your device. We never receive
+                        it, and it's never transmitted anywhere, not to us and
+                        not to any third party.
+                    </p>
+
+                    <h3 class="mt-6 mb-2 text-lg font-semibold">Your rights</h3>
+                    <p>
+                        Since we never receive or store this data on our
+                        servers, there's nothing for us to access, correct or
+                        delete on our end. Uninstalling an app removes all of
+                        its locally stored progress.
+                    </p>
+                </section>
 
                 <p class="mt-12 text-sm text-[var(--ni-gray-light)]">
                     Last updated: {{ lastUpdated }}
