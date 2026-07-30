@@ -78,9 +78,30 @@ class SiteSettings extends Page implements HasForms
                     ]),
 
                 Section::make('Footer')
+                    ->description('Business details shown in the site footer.')
                     ->components([
-                        TextInput::make('footer_title')->label('Title')->required(),
-                        Textarea::make('footer_text')->label('Text')->rows(2)->required(),
+                        Textarea::make('footer_text')->label('Tagline')->rows(2)->required(),
+                        TextInput::make('footer_company_name')->label('Company name')->required(),
+                        Textarea::make('footer_address')->label('Address')->rows(2)
+                            ->helperText('One line per row; line breaks are preserved.'),
+                        TextInput::make('footer_email')->label('Email')->email(),
+                        TextInput::make('footer_phone')->label('Phone')
+                            ->helperText('Shown as-is; use international format, e.g. +32 479 08 98 44.'),
+                        TextInput::make('footer_vat')->label('VAT / TVA number'),
+                    ]),
+
+                Section::make('Social links')
+                    ->description('Leave a field empty to hide that icon. Paste the full profile URL.')
+                    ->columns(2)
+                    ->components([
+                        TextInput::make('social_linkedin')->label('LinkedIn')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_youtube')->label('YouTube')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_instagram')->label('Instagram')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_x')->label('X (Twitter)')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_facebook')->label('Facebook')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_github')->label('GitHub')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_tiktok')->label('TikTok')->url()->prefixIcon('heroicon-o-link'),
+                        TextInput::make('social_bluesky')->label('Bluesky')->url()->prefixIcon('heroicon-o-link'),
                     ]),
             ])
             ->statePath('data');

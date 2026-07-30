@@ -46,12 +46,30 @@ class SiteSetting extends Model
             'cta_title' => 'Ready to start your project?',
             'cta_subtitle' => 'Tell us what you are trying to solve.',
             'cta_button_label' => 'Contact us',
-            'footer_title' => 'Example Studio',
             'footer_text' => 'A short footer line about the studio.',
+
+            // Footer — business details (dummy values; set the real ones in /admin).
+            'footer_company_name' => 'Example Studio',
+            'footer_address' => "Example Street 1\n1000 Example City, Country",
+            'footer_email' => 'hello@example.com',
+            'footer_phone' => '',
+            'footer_vat' => '',
+
+            // Footer — social links. Empty = not rendered. Full URLs.
+            'social_linkedin' => '',
+            'social_youtube' => '',
+            'social_instagram' => '',
+            'social_x' => '',
+            'social_facebook' => '',
+            'social_github' => '',
+            'social_tiktok' => '',
+            'social_bluesky' => '',
         ];
     }
 
-    /** All stored values, cached forever until the next write.
+    /**
+     * All stored values, cached forever until the next write.
+     *
      * @return array<string, mixed>
      */
     public static function stored(): array
@@ -61,7 +79,9 @@ class SiteSetting extends Model
         });
     }
 
-    /** Defaults merged with stored overrides — what the frontend receives.
+    /**
+     * Defaults merged with stored overrides — what the frontend receives.
+     *
      * @return array<string, mixed>
      */
     public static function shared(): array
