@@ -252,41 +252,24 @@ onUnmounted(() => removeNavigateListener?.());
             <slot />
         </main>
 
-        <footer
-            class="border-t-[3px] border-[var(--ni-green)] bg-[var(--ni-gray)] text-white"
-        >
-            <div class="mx-auto max-w-6xl px-6 py-12">
-                <div class="grid gap-10 md:grid-cols-3">
+        <footer class="border-t-[3px] border-[var(--ni-green)] bg-[var(--ni-gray)] text-white">
+            <div class="mx-auto max-w-6xl px-6 py-14">
+                <div class="grid gap-10 md:grid-cols-3 lg:gap-16">
                     <!-- Company -->
                     <div>
                         <img
                             src="/images/logo-light.svg"
                             alt="Nov Inicium"
                             class="h-8 w-auto"
-                            @error="
-                                onLogoError(
-                                    $event,
-                                    '/images/logo-light-placeholder.svg',
-                                )
-                            "
+                            @error="onLogoError($event, '/images/logo-light-placeholder.svg')"
                         />
-                        <p class="mt-3 text-sm text-[var(--ni-gray-lightest)]">
+                        <p class="mt-4 max-w-xs text-sm leading-relaxed text-[var(--ni-gray-lightest)]">
                             {{ site.footer_text }}
                         </p>
-                        <address
-                            class="mt-4 text-sm text-[var(--ni-gray-lightest)] not-italic"
-                        >
-                            <p class="font-semibold text-white">
-                                {{ site.footer_company_name }}
-                            </p>
-                            <p
-                                v-for="line in addressLines"
-                                :key="line"
-                                class="mt-0.5"
-                            >
-                                {{ line }}
-                            </p>
-                            <p v-if="site.footer_email" class="mt-2">
+                        <address class="mt-6 space-y-0.5 text-sm not-italic text-[var(--ni-gray-lightest)]">
+                            <p class="font-semibold text-white">{{ site.footer_company_name }}</p>
+                            <p v-for="line in addressLines" :key="line">{{ line }}</p>
+                            <p v-if="site.footer_email" class="pt-3">
                                 <a
                                     :href="`mailto:${site.footer_email}`"
                                     class="underline underline-offset-4 hover:text-[var(--ni-green)]"
@@ -302,26 +285,15 @@ onUnmounted(() => removeNavigateListener?.());
                                     {{ site.footer_phone }}
                                 </a>
                             </p>
-                            <p
-                                v-if="site.footer_vat"
-                                class="mt-2 text-xs text-[var(--ni-gray-light)]"
-                            >
-                                VAT:
-                                <span class="text-[var(--ni-gray-lightest)]">{{
-                                    site.footer_vat
-                                }}</span>
-                            </p>
                         </address>
                     </div>
 
                     <!-- Navigation -->
                     <nav aria-label="Footer navigation">
-                        <h2
-                            class="text-sm font-semibold tracking-wider text-[var(--ni-green)] uppercase"
-                        >
+                        <h2 class="text-sm font-semibold uppercase tracking-wider text-[var(--ni-green)]">
                             Navigation
                         </h2>
-                        <ul class="mt-4 space-y-2 text-sm">
+                        <ul class="mt-4 space-y-2.5 text-sm">
                             <li v-for="item in navItems" :key="item.href">
                                 <Link
                                     :href="item.href"
@@ -343,16 +315,11 @@ onUnmounted(() => removeNavigateListener?.());
 
                     <!-- Social -->
                     <div v-if="activeSocials.length">
-                        <h2
-                            class="text-sm font-semibold tracking-wider text-[var(--ni-green)] uppercase"
-                        >
+                        <h2 class="text-sm font-semibold uppercase tracking-wider text-[var(--ni-green)]">
                             Connect
                         </h2>
                         <ul class="mt-4 flex flex-wrap gap-3">
-                            <li
-                                v-for="social in activeSocials"
-                                :key="social.key"
-                            >
+                            <li v-for="social in activeSocials" :key="social.key">
                                 <a
                                     :href="social.url"
                                     target="_blank"
@@ -360,11 +327,7 @@ onUnmounted(() => removeNavigateListener?.());
                                     :aria-label="`${social.label} (opens in a new tab)`"
                                     class="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--ni-green)] transition-transform hover:-translate-y-0.5"
                                 >
-                                    <svg
-                                        class="h-5 w-5 fill-[var(--ni-gray)]"
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                    >
+                                    <svg class="h-5 w-5 fill-[var(--ni-gray)]" viewBox="0 0 24 24" aria-hidden="true">
                                         <path :d="social.path" />
                                     </svg>
                                 </a>
@@ -373,13 +336,15 @@ onUnmounted(() => removeNavigateListener?.());
                     </div>
                 </div>
             </div>
+
+            <!-- Bottom bar: full-width border, copyright + legal -->
             <div class="border-t border-white/10">
-                <p
-                    class="mx-auto max-w-6xl px-6 py-6 text-center text-xs text-[var(--ni-gray-lightest)]"
+                <div
+                    class="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-6 text-center text-xs text-[var(--ni-gray-lightest)] sm:flex-row sm:justify-between sm:text-left"
                 >
-                    &copy; {{ currentYear }} {{ site.footer_company_name }}. All
-                    rights reserved.
-                </p>
+                    <p>&copy; {{ currentYear }} {{ site.footer_company_name }}. All rights reserved.</p>
+                    <p v-if="site.footer_vat">BCE / VAT: {{ site.footer_vat }}</p>
+                </div>
             </div>
         </footer>
     </div>
