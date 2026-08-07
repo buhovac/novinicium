@@ -34,11 +34,10 @@ const lastUpdated = 'July 2026'; // EDIT-ME: update when the policy changes
                         data controller for this website (novinicium.be). You
                         can reach us at
                         <a
-                            href="mailto:contact@novinicium.be"
+                            href="mailto:admin@novinicium.be"
                             class="underline underline-offset-4"
-                            >contact@novinicium.be</a
+                            >admin@novinicium.be</a
                         >.
-                        <!-- EDIT-ME: potvrdi email; po želji dodaj BE broj poduzeća (BCE/KBO) -->
                     </p>
                 </section>
 
@@ -125,9 +124,9 @@ const lastUpdated = 'July 2026'; // EDIT-ME: update when the policy changes
                         restrict or object to its processing, and receive a copy
                         in a portable format. Email us at
                         <a
-                            href="mailto:contact@novinicium.be"
+                            href="mailto:admin@novinicium.be"
                             class="underline underline-offset-4"
-                            >contact@novinicium.be</a
+                            >admin@novinicium.be</a
                         >
                         and we will respond within one month.
                     </p>
