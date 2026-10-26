@@ -46,7 +46,7 @@ class PostForm
                     ->toolbarButtons([
                         ['bold', 'italic', 'link'],
                         ['h2', 'h3'],
-                        ['blockquote', 'bulletList', 'orderedList', 'codeBlock'],
+                        ['blockquote', 'bulletList', 'orderedList'],
                         ['table', 'grid'],
                         ['customBlocks'],
                     ])

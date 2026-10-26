@@ -21,22 +21,6 @@ function calloutNode(array|string|null $config): array
     return ['type' => 'customBlock', 'attrs' => ['id' => 'callout', 'config' => $config]];
 }
 
-/**
- * @return array<string, mixed>
- */
-function paragraphNode(string $text): array
-{
-    return ['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => $text]]];
-}
-
-/**
- * @param  array<int, array<string, mixed>>  $content
- */
-function postWithBody(array $content): Post
-{
-    return Post::factory()->create(['body_json' => ['type' => 'doc', 'content' => $content]]);
-}
-
 it('renders a valid callout with its variant as a text label', function () {
     $post = postWithBody([
         calloutNode(['variant' => 'warning', 'title' => 'Check contrast', 'body' => "First.\n\nSecond."]),

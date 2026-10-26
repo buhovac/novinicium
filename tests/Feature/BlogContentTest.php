@@ -195,7 +195,7 @@ describe('native nodes', function () {
         ])]);
 
         expect(app(BuildPostContent::class)->handle($post))->toBe([
-            ['type' => 'codeBlock', 'language' => null, 'text' => '<?php echo 1;'],
+            ['type' => 'code', 'language' => 'plaintext', 'label' => 'Plain text', 'code' => '<?php echo 1;'],
             ['type' => 'horizontalRule'],
             ['type' => 'table', 'content' => [
                 ['type' => 'tableRow', 'content' => [

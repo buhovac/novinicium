@@ -31,11 +31,6 @@ export type OrderedListNode = {
 };
 export type BlockquoteNode = { type: 'blockquote'; content: BlockNode[] };
 export type HorizontalRuleNode = { type: 'horizontalRule' };
-export type CodeBlockNode = {
-    type: 'codeBlock';
-    language: string | null;
-    text: string;
-};
 
 export type TableCellNode = {
     type: 'tableHeader' | 'tableCell';
@@ -69,6 +64,27 @@ export type CalloutNode = {
     paragraphs: string[];
 };
 
+/** Custom block: Image (App\Filament\Resources\Posts\Blocks\ImageBlock). */
+export type ImageWidth = 'standard' | 'wide' | 'full';
+export type ImageBlockNode = {
+    type: 'image';
+    src: string;
+    /** Empty only when decorative. */
+    alt: string;
+    decorative: boolean;
+    caption: string | null;
+    credit: string | null;
+    width: ImageWidth;
+};
+
+/** Custom block: Code (CodeBlock); native code blocks map to it too. */
+export type CodeNode = {
+    type: 'code';
+    language: string;
+    label: string;
+    code: string;
+};
+
 export type BlockNode =
     | ParagraphNode
     | HeadingNode
@@ -76,7 +92,8 @@ export type BlockNode =
     | OrderedListNode
     | BlockquoteNode
     | HorizontalRuleNode
-    | CodeBlockNode
     | TableNode
     | GridNode
-    | CalloutNode;
+    | CalloutNode
+    | ImageBlockNode
+    | CodeNode;

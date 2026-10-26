@@ -2,6 +2,7 @@
 
 namespace App\Actions\Blog;
 
+use App\Filament\Resources\Posts\Blocks\CodeBlock;
 use App\Filament\Resources\Posts\Blocks\PostContentBlocks;
 use App\Models\Post;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
@@ -133,11 +134,11 @@ class BuildPostContent
             ],
             'blockquote' => ['type' => 'blockquote', 'content' => $this->blocks($content)],
             'horizontalRule' => ['type' => 'horizontalRule'],
-            'codeBlock' => [
-                'type' => 'codeBlock',
-                'language' => $this->codeLanguage($attrs['language'] ?? null),
-                'text' => $this->plainText($content),
-            ],
+            // Native code blocks render exactly like the Code custom block.
+            'codeBlock' => CodeBlock::normalize([
+                'language' => $attrs['language'] ?? null,
+                'code' => $this->plainText($content),
+            ]),
             'table' => $this->table($content),
             'grid' => $this->grid($attrs, $content),
             // Each custom block validates its own config; unknown ids are dropped.
@@ -356,11 +357,6 @@ class BuildPostContent
         }
 
         return $url;
-    }
-
-    private function codeLanguage(mixed $language): ?string
-    {
-        return is_string($language) && preg_match('/^[a-z0-9+#\-]{1,30}$/i', $language) ? $language : null;
     }
 
     /**

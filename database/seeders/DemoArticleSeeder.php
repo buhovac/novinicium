@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Filament\Resources\Posts\Blocks\CalloutVariant;
+use App\Filament\Resources\Posts\Blocks\CodeLanguage;
+use App\Filament\Resources\Posts\Blocks\ImageWidth;
 use App\Models\Post;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 /**
@@ -19,11 +22,17 @@ class DemoArticleSeeder extends Seeder
 {
     public const SLUG = 'demo-visual-impairments';
 
+    public const CONTRAST_IMAGE = 'images/demo-contrast-comparison.png';
+
+    public const DIVIDER_IMAGE = 'images/demo-divider.png';
+
     public function run(): void
     {
         if (app()->isProduction()) {
             throw new RuntimeException('DemoArticleSeeder is for local development only.');
         }
+
+        $this->storeDemoImages();
 
         Post::updateOrCreate(['slug' => self::SLUG], [
             'title' => 'Visual Impairments: Types, Causes and Assistive Technologies',
@@ -69,6 +78,14 @@ class DemoArticleSeeder extends Seeder
                 'A sign-up form marks invalid fields only with a red border. A user with red-green colour vision deficiency cannot tell which field is wrong. Adding an icon and a text message such as "Enter a valid email address" fixes this for everyone.',
             ),
 
+            $this->image(
+                self::CONTRAST_IMAGE,
+                alt: 'Two samples of the letters Aa on a white background: on the left in dark grey, clearly readable; on the right in pale grey, barely visible.',
+                caption: 'Dark grey #353535 on white reaches a contrast ratio of about 12.6:1. Pale grey #C8C8C8 on white reaches only about 1.7:1, far below the 4.5:1 that WCAG 2.1 level AA requires for normal text.',
+                credit: 'Illustration: Nov Inicium, generated for this demo article.',
+                width: ImageWidth::Wide,
+            ),
+
             $this->heading(2, 'Common causes'),
             $this->paragraph('The World Health Organization lists uncorrected refractive errors and cataract as the leading causes of vision impairment, followed by conditions such as age-related macular degeneration, glaucoma and diabetic retinopathy.'),
             $this->callout(
@@ -77,9 +94,23 @@ class DemoArticleSeeder extends Seeder
                 "The same WHO report (2019) estimates that at least 1 billion of these cases could have been prevented or have yet to be addressed.\n\nFor the web, this means many readers live with vision loss that will not be corrected, so accessible design remains necessary.",
             ),
 
+            $this->image(self::DIVIDER_IMAGE, decorative: true),
+
             $this->heading(2, 'Assistive technologies'),
             $this->heading(3, 'Screen readers'),
             $this->paragraph('Screen readers such as NVDA and JAWS on Windows, VoiceOver on Apple devices and TalkBack on Android read the page structure aloud. They depend on real headings, labelled form fields and text alternatives for images.'),
+            $this->paragraph('Screen readers announce an image through its alt text, and a visible caption through the figure caption. They do different jobs, as this markup shows:'),
+            $this->code(CodeLanguage::Html, <<<'HTML'
+                <figure>
+                  <img src="contrast.png"
+                       alt="Letters Aa in dark grey and in pale grey on white">
+                  <figcaption>Pale grey text fails WCAG contrast.</figcaption>
+                </figure>
+
+                <!-- Purely decorative: empty alt, so screen readers skip it -->
+                <img src="divider.png" alt="">
+                HTML),
+
             $this->heading(3, 'Screen magnification'),
             $this->paragraph('Magnifiers enlarge part of the screen, sometimes many times over. Layouts that reflow cleanly when zoomed are essential for these users.'),
             $this->callout(
@@ -104,6 +135,92 @@ class DemoArticleSeeder extends Seeder
     private function paragraph(string $text): array
     {
         return ['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => $text]]];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function image(
+        string $path,
+        string $alt = '',
+        ?string $caption = null,
+        ?string $credit = null,
+        ImageWidth $width = ImageWidth::Standard,
+        bool $decorative = false,
+    ): array {
+        return ['type' => 'customBlock', 'attrs' => [
+            'id' => 'image',
+            'config' => [
+                'path' => $path,
+                'decorative' => $decorative,
+                'alt' => $alt,
+                'caption' => $caption,
+                'credit' => $credit,
+                'width' => $width->value,
+            ],
+        ]];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function code(CodeLanguage $language, string $code): array
+    {
+        return ['type' => 'customBlock', 'attrs' => [
+            'id' => 'code',
+            'config' => ['language' => $language->value, 'code' => $code],
+        ]];
+    }
+
+    /**
+     * Generate the demo images on the public disk (overwritten on each run).
+     */
+    private function storeDemoImages(): void
+    {
+        Storage::disk('public')->put(self::CONTRAST_IMAGE, $this->contrastImagePng());
+        Storage::disk('public')->put(self::DIVIDER_IMAGE, $this->dividerImagePng());
+    }
+
+    /**
+     * 1200x500 PNG: "Aa" in #353535 (left) and #C8C8C8 (right) on white.
+     */
+    private function contrastImagePng(): string
+    {
+        $scale = 10;
+        $small = imagecreatetruecolor(120, 50);
+        imagefill($small, 0, 0, (int) imagecolorallocate($small, 255, 255, 255));
+        imagestring($small, 5, 21, 17, 'Aa', (int) imagecolorallocate($small, 0x35, 0x35, 0x35));
+        imagestring($small, 5, 81, 17, 'Aa', (int) imagecolorallocate($small, 0xC8, 0xC8, 0xC8));
+        imageline($small, 60, 6, 60, 43, (int) imagecolorallocate($small, 0xE5, 0xE5, 0xE5));
+
+        $image = imagecreatetruecolor(120 * $scale, 50 * $scale);
+        imagecopyresized($image, $small, 0, 0, 0, 0, 120 * $scale, 50 * $scale, 120, 50);
+
+        return $this->toPng($image);
+    }
+
+    /**
+     * 1200x60 PNG: a brand-green band with grey stripes (purely decorative).
+     */
+    private function dividerImagePng(): string
+    {
+        $image = imagecreatetruecolor(1200, 60);
+        imagefill($image, 0, 0, (int) imagecolorallocate($image, 0xBE, 0xEF, 0x35));
+        $grey = (int) imagecolorallocate($image, 0x35, 0x35, 0x35);
+
+        for ($x = -60; $x < 1200; $x += 40) {
+            imagefilledpolygon($image, [$x, 60, $x + 12, 60, $x + 72, 0, $x + 60, 0], $grey);
+        }
+
+        return $this->toPng($image);
+    }
+
+    private function toPng(\GdImage $image): string
+    {
+        ob_start();
+        imagepng($image);
+
+        return (string) ob_get_clean();
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -47,4 +48,35 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/*
+|--------------------------------------------------------------------------
+| Blog content helpers
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * @return array<string, mixed>
+ */
+function paragraphNode(string $text): array
+{
+    return ['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => $text]]];
+}
+
+/**
+ * @param  array<int, array<string, mixed>>  $content
+ */
+function postWithBody(array $content): Post
+{
+    return Post::factory()->create(['body_json' => ['type' => 'doc', 'content' => $content]]);
+}
+
+/**
+ * @param  array<string, mixed>|string|null  $config
+ * @return array<string, mixed>
+ */
+function customBlockNode(string $id, array|string|null $config): array
+{
+    return ['type' => 'customBlock', 'attrs' => ['id' => $id, 'config' => $config]];
 }

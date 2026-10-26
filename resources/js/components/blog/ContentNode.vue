@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import ArticleCallout from '@/components/blog/ArticleCallout.vue';
+import ArticleCode from '@/components/blog/ArticleCode.vue';
+import ArticleImage from '@/components/blog/ArticleImage.vue';
 import InlineContent from '@/components/blog/InlineContent.vue';
 import type { BlockNode, TableRowNode } from '@/types/blog-content';
 
@@ -71,11 +73,7 @@ const tableSections = computed<{
 
     <hr v-else-if="node.type === 'horizontalRule'" />
 
-    <!-- Focusable so keyboard users can scroll long lines. -->
-    <pre
-        v-else-if="node.type === 'codeBlock'"
-        tabindex="0"
-    ><code :data-language="node.language ?? undefined">{{ node.text }}</code></pre>
+    <ArticleCode v-else-if="node.type === 'code'" :node="node" />
 
     <!-- Scrollable, keyboard-focusable region so wide tables never break the layout. -->
     <div
@@ -147,4 +145,5 @@ const tableSections = computed<{
     </div>
 
     <ArticleCallout v-else-if="node.type === 'callout'" :node="node" />
+    <ArticleImage v-else-if="node.type === 'image'" :node="node" />
 </template>

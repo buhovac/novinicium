@@ -15,6 +15,8 @@ class PostContentBlocks
     {
         return [
             CalloutBlock::class,
+            ImageBlock::class,
+            CodeBlock::class,
         ];
     }
 
