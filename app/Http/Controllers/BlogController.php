@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Blog\BuildPostContent;
 use App\Models\Post;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,7 +27,7 @@ class BlogController extends Controller
         ]);
     }
 
-    public function show(Post $post): Response
+    public function show(Post $post, BuildPostContent $buildPostContent): Response
     {
         // Drafts are not public even if the slug is guessed.
         abort_unless(
@@ -37,7 +38,7 @@ class BlogController extends Controller
         return Inertia::render('Blog/Show', [
             'post' => [
                 'title' => $post->title,
-                'body' => $post->body,
+                'content' => $buildPostContent->handle($post),
                 'image_path' => $post->image_url,
                 'author' => $post->author,
                 'published_at' => $post->published_at->toDateString(),

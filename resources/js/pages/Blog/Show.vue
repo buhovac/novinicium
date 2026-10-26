@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import BlogContent from '@/components/blog/BlogContent.vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
+import type { BlockNode } from '@/types/blog-content';
 
-// body is now HTML from the admin RichEditor. It is authored only by the site
-// owner (registration is disabled), so v-html is safe here — no public input.
+// content is a server-normalized node tree (App\Actions\Blog\BuildPostContent),
+// rendered through components — no v-html anywhere on the blog.
 defineProps<{
     post: {
         title: string;
-        body: string;
+        content: BlockNode[];
         image_path: string;
         author: string;
         published_at: string;
@@ -48,7 +50,7 @@ defineProps<{
                 class="mt-8 aspect-video w-full rounded-xl object-cover"
             />
 
-            <div class="ni-prose mt-10 text-lg" v-html="post.body" />
+            <BlogContent :nodes="post.content" class="mt-10 text-lg" />
         </article>
     </PublicLayout>
 </template>

@@ -127,6 +127,111 @@
     color: var(--ni-gray-light);
     margin: 1.5rem 0;
 }
+.ni-prose hr {
+    border: 0;
+    border-top: 1px solid var(--ni-gray-lightest);
+    margin: 2rem 0;
+}
+.ni-prose img {
+    max-width: 100%;
+    height: auto;
+}
+.ni-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--ni-gray-lightest);
+    border-radius: 0.25rem;
+    padding: 0.1em 0.3em;
+}
+.ni-prose pre {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--ni-gray);
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.ni-prose pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+}
+.ni-prose .ni-table {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+.ni-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+.ni-prose th,
+.ni-prose td {
+    border: 1px solid var(--ni-gray-lightest);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+}
+.ni-prose th {
+    font-weight: 600;
+}
+.ni-prose th p,
+.ni-prose td p {
+    margin-bottom: 0;
+}
+
+/* Native RichEditor grid (columns): stacked on small screens. */
+.ni-prose .ni-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+.ni-prose .ni-grid > * {
+    min-width: 0;
+}
+@media (min-width: 40rem) {
+    .ni-grid[data-from='sm'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='sm'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 48rem) {
+    .ni-grid[data-from='md'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='md'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 64rem) {
+    .ni-grid[data-from='lg'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='lg'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 80rem) {
+    .ni-grid[data-from='xl'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='xl'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 96rem) {
+    .ni-grid[data-from='2xl'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='2xl'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
 
 /* ---- Image with corner labels (blog/portfolio cards) ---- */
 .ni-media {

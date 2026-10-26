@@ -34,11 +34,19 @@ class PostForm
                     ->maxLength(500)
                     ->helperText('Kratki izvadak prikazan u listi (do 500 znakova).'),
 
-                RichEditor::make('body')
+                // Stored as TipTap JSON; the Post model mirrors a sanitized HTML
+                // snapshot into `body` on save. Legacy posts are prefilled from
+                // `body` in EditPost until they are saved once.
+                RichEditor::make('body_json')
+                    ->label('Body')
+                    ->json()
                     ->required()
                     ->columnSpanFull()
                     ->toolbarButtons([
-                        'bold', 'italic', 'h2', 'h3', 'bulletList', 'orderedList', 'link', 'blockquote',
+                        ['bold', 'italic', 'link'],
+                        ['h2', 'h3'],
+                        ['blockquote', 'bulletList', 'orderedList', 'codeBlock'],
+                        ['table', 'grid'],
                     ])
                     ->helperText('Koristi H2/H3 za naslove sekcija. Ne preskači razine (H2 prije H3).'),
 

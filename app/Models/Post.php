@@ -2,22 +2,31 @@
 
 namespace App\Models;
 
+use Database\Factories\PostFactory;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property string $body
+ * @property array<string, mixed>|null $body_json
  * @property Carbon|null $published_at
  * @property-read string|null $image_url
  */
 class Post extends Model
 {
+    /** @use HasFactory<PostFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'title',
         'slug',
         'excerpt',
         'body',
+        'body_json',
         'image_path',
         'author',
         'published_at',
@@ -26,8 +35,22 @@ class Post extends Model
     protected function casts(): array
     {
         return [
+            'body_json' => 'array',
             'published_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Whenever the TipTap document changes, mirror it into `body` as a
+     * sanitized HTML snapshot (rollback safety, RSS/excerpt reuse).
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Post $post): void {
+            if ($post->isDirty('body_json') && $post->body_json !== null) {
+                $post->body = RichContentRenderer::make($post->body_json)->toHtml();
+            }
+        });
     }
 
     /**
@@ -52,8 +75,15 @@ class Post extends Model
 
     private function resolveImageUrl(): ?string
     {
-        $path = $this->image_path;
+        return static::storageUrlFor($this->image_path);
+    }
 
+    /**
+     * Turn a stored image path into a public URL. Absolute URLs and
+     * root-relative paths pass through; bare paths live on the public disk.
+     */
+    public static function storageUrlFor(?string $path): ?string
+    {
         if (! $path) {
             return null;
         }
