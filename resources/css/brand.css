@@ -438,3 +438,89 @@
     margin: 0;
     border-radius: 0 0 0.75rem 0.75rem;
 }
+
+/* ---- Blog table caption ---- */
+.ni-prose .ni-table caption {
+    caption-side: top;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--ni-gray);
+}
+
+/* ---- Blog columns ----
+ * Wide/full images cannot break out of a column: they fill the column.
+ * No `order` or reversed flow anywhere, so DOM order = visual order.
+ */
+.ni-prose .ni-grid-column > :first-child {
+    margin-top: 0;
+}
+.ni-prose .ni-grid-column > :last-child {
+    margin-bottom: 0;
+}
+.ni-prose .ni-grid .ni-figure img {
+    width: 100%;
+    margin-inline: 0;
+}
+
+/* ---- Blog statistics ----
+ * Values in --ni-gray (12.6:1 on white), explanation/source in
+ * --ni-gray-light (7.0:1). Lime only as the top border accent.
+ * Stacked on narrow screens; columns from 40rem.
+ */
+.ni-prose .ni-stats {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+}
+@media (min-width: 40rem) {
+    .ni-prose .ni-stats[data-layout='two'] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ni-prose .ni-stats[data-layout='three'] {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+.ni-prose .ni-stat {
+    margin: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-top: 4px solid var(--ni-green);
+    border-radius: 0.5rem;
+    background: var(--ni-white);
+}
+.ni-prose .ni-stat p {
+    margin-bottom: 0;
+}
+.ni-prose .ni-stat-figure {
+    line-height: 1.4;
+}
+.ni-prose .ni-stat-value {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ni-gray);
+    overflow-wrap: anywhere;
+}
+.ni-prose .ni-stat-unit {
+    margin-left: 0.1em;
+    font-size: 0.6em;
+}
+.ni-prose .ni-stat-label {
+    display: block;
+    margin-top: 0.4rem;
+    font-weight: 600;
+}
+.ni-prose .ni-stat-explanation {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-stat-source {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ni-gray-light);
+}

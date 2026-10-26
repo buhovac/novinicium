@@ -39,7 +39,12 @@ export type TableCellNode = {
     content: BlockNode[];
 };
 export type TableRowNode = { type: 'tableRow'; content: TableCellNode[] };
-export type TableNode = { type: 'table'; content: TableRowNode[] };
+export type TableNode = {
+    type: 'table';
+    /** From a "Table caption" block placed directly above the table. */
+    caption: string | null;
+    content: TableRowNode[];
+};
 
 export type GridColumnNode = {
     type: 'gridColumn';
@@ -85,6 +90,21 @@ export type CodeNode = {
     code: string;
 };
 
+/** Custom block: Statistics (App\Filament\Resources\Posts\Blocks\StatisticsBlock). */
+export type StatisticsLayout = 'single' | 'two' | 'three';
+export type StatisticItem = {
+    value: string;
+    unit: string | null;
+    label: string;
+    explanation: string | null;
+    source: string | null;
+};
+export type StatisticsNode = {
+    type: 'statistics';
+    layout: StatisticsLayout;
+    items: StatisticItem[];
+};
+
 export type BlockNode =
     | ParagraphNode
     | HeadingNode
@@ -96,4 +116,5 @@ export type BlockNode =
     | GridNode
     | CalloutNode
     | ImageBlockNode
-    | CodeNode;
+    | CodeNode
+    | StatisticsNode;

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Filament\Resources\Posts\Blocks\CalloutVariant;
 use App\Filament\Resources\Posts\Blocks\CodeLanguage;
 use App\Filament\Resources\Posts\Blocks\ImageWidth;
+use App\Filament\Resources\Posts\Blocks\StatisticsLayout;
 use App\Models\Post;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -25,6 +26,8 @@ class DemoArticleSeeder extends Seeder
     public const CONTRAST_IMAGE = 'images/demo-contrast-comparison.png';
 
     public const DIVIDER_IMAGE = 'images/demo-divider.png';
+
+    public const ZOOM_IMAGE = 'images/demo-zoom.png';
 
     public function run(): void
     {
@@ -93,6 +96,11 @@ class DemoArticleSeeder extends Seeder
                 'Much of it is preventable',
                 "The same WHO report (2019) estimates that at least 1 billion of these cases could have been prevented or have yet to be addressed.\n\nFor the web, this means many readers live with vision loss that will not be corrected, so accessible design remains necessary.",
             ),
+            $this->statistics(StatisticsLayout::ThreeColumns, [
+                ['value' => '2.2 billion', 'label' => 'people have a near or distance vision impairment', 'explanation' => 'A minimum estimate ("at least").', 'source' => 'WHO, World report on vision (2019)'],
+                ['value' => '1 billion', 'label' => 'of these cases could have been prevented or are not yet addressed', 'explanation' => 'Also a minimum estimate.', 'source' => 'WHO, World report on vision (2019)'],
+                ['value' => '4.5', 'unit' => ':1', 'label' => 'minimum contrast ratio for normal-size text', 'explanation' => 'Large text needs at least 3:1.', 'source' => 'WCAG 2.1, success criterion 1.4.3 (level AA)'],
+            ]),
 
             $this->image(self::DIVIDER_IMAGE, decorative: true),
 
@@ -112,11 +120,38 @@ class DemoArticleSeeder extends Seeder
                 HTML),
 
             $this->heading(3, 'Screen magnification'),
-            $this->paragraph('Magnifiers enlarge part of the screen, sometimes many times over. Layouts that reflow cleanly when zoomed are essential for these users.'),
+            $this->columns([
+                [
+                    $this->paragraph('Magnifiers enlarge part of the screen, sometimes many times over. Layouts that reflow cleanly when zoomed are essential for these users.'),
+                    $this->paragraph('When text is enlarged, a fixed-width layout forces readers to scroll sideways on every line. WCAG 2.1 asks for content that reflows at 400% zoom (success criterion 1.4.10).'),
+                ],
+                [
+                    $this->image(
+                        self::ZOOM_IMAGE,
+                        alt: 'The word Zoom shown twice: small at normal size on the left, and enlarged four times on the right.',
+                        caption: 'The same word at 100% and at 400% magnification.',
+                        credit: 'Illustration: Nov Inicium, generated for this demo article.',
+                    ),
+                ],
+            ]),
             $this->callout(
                 CalloutVariant::Warning,
                 'Do not rely on colour or images alone',
                 'Information conveyed only by colour, or only inside an image without a text alternative, is lost for many readers. WCAG 2.1 addresses this in success criteria 1.4.1 (Use of Color) and 1.1.1 (Non-text Content).',
+            ),
+
+            $this->heading(2, 'Common barriers and how to remove them'),
+            $this->paragraph('Most barriers come from a handful of design decisions. The table pairs each one with the people it affects most and the adaptation that removes it.'),
+            $this->tableCaption('Functional barriers and adaptations for readers with visual impairments'),
+            $this->table(
+                ['Barrier', 'Who is most affected', 'Adaptation'],
+                [
+                    ['Small or low-contrast text', 'People with low vision', 'Contrast of at least 4.5:1 and text that can be resized (WCAG 1.4.3, 1.4.4)'],
+                    ['Information shown only by colour', 'People with colour vision deficiency', 'Add text labels, icons or patterns (WCAG 1.4.1)'],
+                    ['Images without text alternatives', 'Screen reader users', 'Meaningful alt text, or empty alt for decorative images (WCAG 1.1.1)'],
+                    ['Layouts that break when zoomed', 'Screen magnifier users', 'Content that reflows at 400% zoom (WCAG 1.4.10)'],
+                    ['Controls that only work with a mouse', 'Screen reader and keyboard users', 'Full keyboard operation with visible focus (WCAG 2.1.1, 2.4.7)'],
+                ],
             ),
         ]];
     }
@@ -162,6 +197,77 @@ class DemoArticleSeeder extends Seeder
     }
 
     /**
+     * @param  list<array<string, string>>  $items
+     * @return array<string, mixed>
+     */
+    private function statistics(StatisticsLayout $layout, array $items): array
+    {
+        return ['type' => 'customBlock', 'attrs' => [
+            'id' => 'statistics',
+            'config' => ['layout' => $layout->value, 'items' => $items],
+        ]];
+    }
+
+    /**
+     * Native RichEditor grid: one entry per column, each a list of nodes.
+     *
+     * @param  list<list<array<string, mixed>>>  $columns
+     * @return array<string, mixed>
+     */
+    private function columns(array $columns): array
+    {
+        return [
+            'type' => 'grid',
+            'attrs' => ['data-cols' => (string) count($columns), 'data-from-breakpoint' => 'md'],
+            'content' => array_map(fn (array $content): array => [
+                'type' => 'gridColumn',
+                'attrs' => ['data-col-span' => '1'],
+                'content' => $content,
+            ], $columns),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function tableCaption(string $caption): array
+    {
+        return ['type' => 'customBlock', 'attrs' => ['id' => 'tableCaption', 'config' => ['caption' => $caption]]];
+    }
+
+    /**
+     * Native RichEditor table: a header row, then rows whose first cell is a
+     * row header.
+     *
+     * @param  list<string>  $headers
+     * @param  list<list<string>>  $rows
+     * @return array<string, mixed>
+     */
+    private function table(array $headers, array $rows): array
+    {
+        $cell = fn (string $type, string $text): array => [
+            'type' => $type,
+            'attrs' => ['colspan' => 1, 'rowspan' => 1, 'colwidth' => null],
+            'content' => [$this->paragraph($text)],
+        ];
+
+        return [
+            'type' => 'table',
+            'content' => [
+                ['type' => 'tableRow', 'content' => array_map(fn (string $text): array => $cell('tableHeader', $text), $headers)],
+                ...array_map(fn (array $row): array => [
+                    'type' => 'tableRow',
+                    'content' => array_map(
+                        fn (string $text, int $index): array => $cell($index === 0 ? 'tableHeader' : 'tableCell', $text),
+                        $row,
+                        array_keys($row),
+                    ),
+                ], $rows),
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function code(CodeLanguage $language, string $code): array
@@ -179,6 +285,25 @@ class DemoArticleSeeder extends Seeder
     {
         Storage::disk('public')->put(self::CONTRAST_IMAGE, $this->contrastImagePng());
         Storage::disk('public')->put(self::DIVIDER_IMAGE, $this->dividerImagePng());
+        Storage::disk('public')->put(self::ZOOM_IMAGE, $this->zoomImagePng());
+    }
+
+    /**
+     * 800x400 PNG: "Zoom" at 1x (left) and 4x (right), dark grey on white.
+     */
+    private function zoomImagePng(): string
+    {
+        $text = imagecreatetruecolor(36, 16);
+        imagefill($text, 0, 0, (int) imagecolorallocate($text, 255, 255, 255));
+        imagestring($text, 5, 0, 0, 'Zoom', (int) imagecolorallocate($text, 0x35, 0x35, 0x35));
+
+        $image = imagecreatetruecolor(800, 400);
+        imagefill($image, 0, 0, (int) imagecolorallocate($image, 255, 255, 255));
+        imagecopyresized($image, $text, 110, 192, 0, 0, 36 * 2, 16 * 2, 36, 16);
+        imagecopyresized($image, $text, 400, 136, 0, 0, 36 * 8, 16 * 8, 36, 16);
+        imageline($image, 330, 40, 330, 360, (int) imagecolorallocate($image, 0xE5, 0xE5, 0xE5));
+
+        return $this->toPng($image);
     }
 
     /**

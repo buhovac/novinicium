@@ -2,6 +2,7 @@
 
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Process;
 use Tests\TestCase;
 
 /*
@@ -79,4 +80,22 @@ function postWithBody(array $content): Post
 function customBlockNode(string $id, array|string|null $config): array
 {
     return ['type' => 'customBlock', 'attrs' => ['id' => $id, 'config' => $config]];
+}
+
+/**
+ * Render a normalized node tree through the real <BlogContent> Vue component
+ * (Vue server renderer via tests/js/render-blog-content.mjs). Vue's fragment
+ * comments are stripped so assertions can target plain markup.
+ *
+ * @param  list<array<string, mixed>>  $nodes
+ */
+function renderBlogContent(array $nodes): string
+{
+    $result = Process::path(base_path())
+        ->input((string) json_encode($nodes))
+        ->timeout(60)
+        ->run(['node', 'tests/js/render-blog-content.mjs'])
+        ->throw();
+
+    return (string) preg_replace('/<!--.*?-->/s', '', $result->output());
 }

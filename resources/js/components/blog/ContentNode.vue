@@ -1,34 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import ArticleCallout from '@/components/blog/ArticleCallout.vue';
 import ArticleCode from '@/components/blog/ArticleCode.vue';
+import ArticleColumns from '@/components/blog/ArticleColumns.vue';
 import ArticleImage from '@/components/blog/ArticleImage.vue';
+import ArticleStatistics from '@/components/blog/ArticleStatistics.vue';
+import ArticleTable from '@/components/blog/ArticleTable.vue';
 import InlineContent from '@/components/blog/InlineContent.vue';
-import type { BlockNode, TableRowNode } from '@/types/blog-content';
+import type { BlockNode } from '@/types/blog-content';
 
 /** Maps one server-normalized block node to semantic HTML (recursive). */
-const props = defineProps<{
+defineProps<{
     node: BlockNode;
 }>();
-
-/** A first row made only of header cells becomes the table's <thead>. */
-const tableSections = computed<{
-    head: TableRowNode | null;
-    body: TableRowNode[];
-}>(() => {
-    if (props.node.type !== 'table') {
-        return { head: null, body: [] };
-    }
-
-    const [firstRow, ...otherRows] = props.node.content;
-    const isHeaderRow = firstRow.content.every(
-        (cell) => cell.type === 'tableHeader',
-    );
-
-    return isHeaderRow
-        ? { head: firstRow, body: otherRows }
-        : { head: null, body: props.node.content };
-});
 </script>
 
 <template>
@@ -75,75 +58,9 @@ const tableSections = computed<{
 
     <ArticleCode v-else-if="node.type === 'code'" :node="node" />
 
-    <!-- Scrollable, keyboard-focusable region so wide tables never break the layout. -->
-    <div
-        v-else-if="node.type === 'table'"
-        class="ni-table"
-        role="region"
-        aria-label="Table"
-        tabindex="0"
-    >
-        <table>
-            <thead v-if="tableSections.head">
-                <tr>
-                    <th
-                        v-for="(cell, cellIndex) in tableSections.head.content"
-                        :key="cellIndex"
-                        scope="col"
-                        :colspan="cell.colspan > 1 ? cell.colspan : undefined"
-                        :rowspan="cell.rowspan > 1 ? cell.rowspan : undefined"
-                    >
-                        <ContentNode
-                            v-for="(child, childIndex) in cell.content"
-                            :key="childIndex"
-                            :node="child"
-                        />
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="(row, rowIndex) in tableSections.body"
-                    :key="rowIndex"
-                >
-                    <component
-                        :is="cell.type === 'tableHeader' ? 'th' : 'td'"
-                        v-for="(cell, cellIndex) in row.content"
-                        :key="cellIndex"
-                        :scope="cell.type === 'tableHeader' ? 'row' : undefined"
-                        :colspan="cell.colspan > 1 ? cell.colspan : undefined"
-                        :rowspan="cell.rowspan > 1 ? cell.rowspan : undefined"
-                    >
-                        <ContentNode
-                            v-for="(child, childIndex) in cell.content"
-                            :key="childIndex"
-                            :node="child"
-                        />
-                    </component>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div
-        v-else-if="node.type === 'grid'"
-        class="ni-grid"
-        :data-from="node.fromBreakpoint"
-        :style="{ '--ni-grid-cols': node.columns }"
-    >
-        <div
-            v-for="(column, index) in node.content"
-            :key="index"
-            :style="{ '--ni-grid-span': column.span }"
-        >
-            <ContentNode
-                v-for="(child, childIndex) in column.content"
-                :key="childIndex"
-                :node="child"
-            />
-        </div>
-    </div>
-
+    <ArticleTable v-else-if="node.type === 'table'" :node="node" />
+    <ArticleColumns v-else-if="node.type === 'grid'" :node="node" />
     <ArticleCallout v-else-if="node.type === 'callout'" :node="node" />
     <ArticleImage v-else-if="node.type === 'image'" :node="node" />
+    <ArticleStatistics v-else-if="node.type === 'statistics'" :node="node" />
 </template>

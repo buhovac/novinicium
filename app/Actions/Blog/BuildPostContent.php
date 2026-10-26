@@ -106,7 +106,28 @@ class BuildPostContent
             $blocks[] = ['type' => 'paragraph', 'content' => $this->inlines($pendingInline)];
         }
 
-        return $blocks;
+        return $this->attachTableCaptions($blocks);
+    }
+
+    /**
+     * A table caption block becomes the <caption> of the table directly
+     * after it. A caption with no table right after it is dropped.
+     *
+     * @param  list<Node>  $blocks
+     * @return list<Node>
+     */
+    private function attachTableCaptions(array $blocks): array
+    {
+        foreach ($blocks as $index => $block) {
+            if ($block['type'] === 'tableCaption' && ($blocks[$index + 1]['type'] ?? null) === 'table') {
+                $blocks[$index + 1]['caption'] = $block['caption'];
+            }
+        }
+
+        return array_values(array_filter(
+            $blocks,
+            fn (array $block): bool => $block['type'] !== 'tableCaption',
+        ));
     }
 
     /**
@@ -212,7 +233,7 @@ class BuildPostContent
             }
         }
 
-        return $normalizedRows === [] ? null : ['type' => 'table', 'content' => $normalizedRows];
+        return $normalizedRows === [] ? null : ['type' => 'table', 'caption' => null, 'content' => $normalizedRows];
     }
 
     /**

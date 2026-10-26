@@ -17,6 +17,8 @@ class PostContentBlocks
             CalloutBlock::class,
             ImageBlock::class,
             CodeBlock::class,
+            TableCaptionBlock::class,
+            StatisticsBlock::class,
         ];
     }
 
