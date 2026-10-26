@@ -58,6 +58,17 @@ export type GridNode = {
     content: GridColumnNode[];
 };
 
+/** Custom block: Callout (App\Filament\Resources\Posts\Blocks\CalloutBlock). */
+export type CalloutVariant =
+    'information' | 'definition' | 'important' | 'warning' | 'example';
+export type CalloutNode = {
+    type: 'callout';
+    variant: CalloutVariant;
+    label: string;
+    title: string;
+    paragraphs: string[];
+};
+
 export type BlockNode =
     | ParagraphNode
     | HeadingNode
@@ -67,4 +78,5 @@ export type BlockNode =
     | HorizontalRuleNode
     | CodeBlockNode
     | TableNode
-    | GridNode;
+    | GridNode
+    | CalloutNode;

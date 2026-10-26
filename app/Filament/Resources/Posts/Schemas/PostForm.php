@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Filament\Resources\Posts\Blocks\PostContentBlocks;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -47,7 +48,9 @@ class PostForm
                         ['h2', 'h3'],
                         ['blockquote', 'bulletList', 'orderedList', 'codeBlock'],
                         ['table', 'grid'],
+                        ['customBlocks'],
                     ])
+                    ->customBlocks(PostContentBlocks::all())
                     ->helperText('Koristi H2/H3 za naslove sekcija. Ne preskači razine (H2 prije H3).'),
 
                 FileUpload::make('image_path')

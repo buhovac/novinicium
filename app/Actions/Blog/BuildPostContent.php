@@ -2,6 +2,7 @@
 
 namespace App\Actions\Blog;
 
+use App\Filament\Resources\Posts\Blocks\PostContentBlocks;
 use App\Models\Post;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 
@@ -139,8 +140,21 @@ class BuildPostContent
             ],
             'table' => $this->table($content),
             'grid' => $this->grid($attrs, $content),
+            // Each custom block validates its own config; unknown ids are dropped.
+            'customBlock' => $this->customBlock($attrs),
             default => null,
         };
+    }
+
+    /**
+     * @param  array<string, mixed>  $attrs
+     * @return Node|null
+     */
+    private function customBlock(array $attrs): ?array
+    {
+        $block = PostContentBlocks::find($attrs['id'] ?? null);
+
+        return $block === null ? null : $block::normalize($attrs['config'] ?? null);
     }
 
     /**

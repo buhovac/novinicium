@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import ArticleCallout from '@/components/blog/ArticleCallout.vue';
 import InlineContent from '@/components/blog/InlineContent.vue';
 import type { BlockNode, TableRowNode } from '@/types/blog-content';
 
@@ -144,4 +145,6 @@ const tableSections = computed<{
             />
         </div>
     </div>
+
+    <ArticleCallout v-else-if="node.type === 'callout'" :node="node" />
 </template>

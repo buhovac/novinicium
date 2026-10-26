@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Resources\Posts\Blocks\PostContentBlocks;
 use Database\Factories\PostFactory;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,7 +49,9 @@ class Post extends Model
     {
         static::saving(function (Post $post): void {
             if ($post->isDirty('body_json') && $post->body_json !== null) {
-                $post->body = RichContentRenderer::make($post->body_json)->toHtml();
+                $post->body = RichContentRenderer::make(PostContentBlocks::withoutUnusableBlocks($post->body_json))
+                    ->customBlocks(PostContentBlocks::all())
+                    ->toHtml();
             }
         });
     }
