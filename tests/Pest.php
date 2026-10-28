@@ -91,8 +91,27 @@ function customBlockNode(string $id, array|string|null $config): array
  */
 function renderBlogContent(array $nodes): string
 {
+    return runBlogRenderer($nodes);
+}
+
+/**
+ * Render one component from resources/js/components/blog with the given
+ * props, for views that only appear after interaction (e.g. a slider).
+ *
+ * @param  array<string, mixed>  $props
+ */
+function renderBlogComponent(string $component, array $props): string
+{
+    return runBlogRenderer(['component' => $component, 'props' => $props]);
+}
+
+/**
+ * @param  array<int|string, mixed>  $payload
+ */
+function runBlogRenderer(array $payload): string
+{
     $result = Process::path(base_path())
-        ->input((string) json_encode($nodes))
+        ->input((string) json_encode($payload))
         ->timeout(60)
         ->run(['node', 'tests/js/render-blog-content.mjs'])
         ->throw();

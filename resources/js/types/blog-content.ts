@@ -105,6 +105,20 @@ export type StatisticsNode = {
     items: StatisticItem[];
 };
 
+/** Custom block: Image comparison (App\Filament\Resources\Posts\Blocks\ImageComparisonBlock). */
+export type ComparisonImage = {
+    src: string;
+    /** Always non-empty: both alts are required. */
+    alt: string;
+    label: string | null;
+};
+export type ImageComparisonNode = {
+    type: 'imageComparison';
+    first: ComparisonImage;
+    second: ComparisonImage;
+    caption: string | null;
+};
+
 export type BlockNode =
     | ParagraphNode
     | HeadingNode
@@ -117,4 +131,5 @@ export type BlockNode =
     | CalloutNode
     | ImageBlockNode
     | CodeNode
-    | StatisticsNode;
+    | StatisticsNode
+    | ImageComparisonNode;

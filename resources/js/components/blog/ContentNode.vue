@@ -3,6 +3,7 @@ import ArticleCallout from '@/components/blog/ArticleCallout.vue';
 import ArticleCode from '@/components/blog/ArticleCode.vue';
 import ArticleColumns from '@/components/blog/ArticleColumns.vue';
 import ArticleImage from '@/components/blog/ArticleImage.vue';
+import ArticleImageComparison from '@/components/blog/ArticleImageComparison.vue';
 import ArticleStatistics from '@/components/blog/ArticleStatistics.vue';
 import ArticleTable from '@/components/blog/ArticleTable.vue';
 import InlineContent from '@/components/blog/InlineContent.vue';
@@ -63,4 +64,8 @@ defineProps<{
     <ArticleCallout v-else-if="node.type === 'callout'" :node="node" />
     <ArticleImage v-else-if="node.type === 'image'" :node="node" />
     <ArticleStatistics v-else-if="node.type === 'statistics'" :node="node" />
+    <ArticleImageComparison
+        v-else-if="node.type === 'imageComparison'"
+        :node="node"
+    />
 </template>

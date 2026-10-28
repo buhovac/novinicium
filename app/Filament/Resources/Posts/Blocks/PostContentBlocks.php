@@ -19,6 +19,7 @@ class PostContentBlocks
             CodeBlock::class,
             TableCaptionBlock::class,
             StatisticsBlock::class,
+            ImageComparisonBlock::class,
         ];
     }
 

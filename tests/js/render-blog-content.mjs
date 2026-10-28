@@ -4,6 +4,9 @@
  * prints the HTML. Uses only installed packages (vite, @vitejs/plugin-vue, vue).
  *
  * Usage: echo '[...nodes]' | node tests/js/render-blog-content.mjs
+ *
+ * To render a single blog component instead (e.g. a view only reachable after
+ * interaction), pass {"component": "ImageComparisonSlider", "props": {...}}.
  */
 import { fileURLToPath } from 'node:url';
 import vue from '@vitejs/plugin-vue';
@@ -31,13 +34,20 @@ const server = await createServer({
 });
 
 try {
-    const { default: BlogContent } = await server.ssrLoadModule(
-        '/resources/js/components/blog/BlogContent.vue',
+    const payload = JSON.parse(input);
+    const isSingleComponent = !Array.isArray(payload);
+    const name = isSingleComponent ? payload.component : 'BlogContent';
+
+    if (!/^[A-Za-z]+$/.test(name)) {
+        throw new Error(`Invalid component name: ${name}`);
+    }
+
+    const { default: component } = await server.ssrLoadModule(
+        `/resources/js/components/blog/${name}.vue`,
     );
+    const props = isSingleComponent ? payload.props : { nodes: payload };
     const html = await renderToString(
-        createSSRApp({
-            render: () => h(BlogContent, { nodes: JSON.parse(input) }),
-        }),
+        createSSRApp({ render: () => h(component, props) }),
     );
     process.stdout.write(html);
 } finally {

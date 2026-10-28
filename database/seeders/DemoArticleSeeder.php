@@ -29,6 +29,10 @@ class DemoArticleSeeder extends Seeder
 
     public const ZOOM_IMAGE = 'images/demo-zoom.png';
 
+    public const VISION_NORMAL_IMAGE = 'images/demo-vision-normal.png';
+
+    public const VISION_CATARACT_IMAGE = 'images/demo-vision-cataract.png';
+
     public function run(): void
     {
         if (app()->isProduction()) {
@@ -91,6 +95,20 @@ class DemoArticleSeeder extends Seeder
 
             $this->heading(2, 'Common causes'),
             $this->paragraph('The World Health Organization lists uncorrected refractive errors and cataract as the leading causes of vision impairment, followed by conditions such as age-related macular degeneration, glaucoma and diabetic retinopathy.'),
+            $this->paragraph('A cataract is a clouding of the lens inside the eye. It usually develops slowly and makes vision blurry or hazy, with colours that look faded or yellowish.'),
+            $this->imageComparison(
+                first: [
+                    'path' => self::VISION_NORMAL_IMAGE,
+                    'alt' => 'A simple eye chart, sharp and high-contrast: rows of dark grey letters getting smaller from top to bottom, above three bright squares in red, blue and lime green.',
+                    'label' => 'Normal vision',
+                ],
+                second: [
+                    'path' => self::VISION_CATARACT_IMAGE,
+                    'alt' => 'The same eye chart blurred and washed out with a yellowish haze: the large letters at the top can still be made out, the smaller rows below cannot, and the red, blue and green squares look dull and muddy.',
+                    'label' => 'Simulated cataract',
+                ],
+                caption: 'A rough simulation for illustration only. How a cataract affects sight varies from person to person and changes as it develops.',
+            ),
             $this->callout(
                 CalloutVariant::Important,
                 'Much of it is preventable',
@@ -197,6 +215,24 @@ class DemoArticleSeeder extends Seeder
     }
 
     /**
+     * @param  array{path: string, alt: string, label: string}  $first
+     * @param  array{path: string, alt: string, label: string}  $second
+     * @return array<string, mixed>
+     */
+    private function imageComparison(array $first, array $second, ?string $caption = null): array
+    {
+        $config = ['caption' => $caption];
+
+        foreach (['first' => $first, 'second' => $second] as $side => $image) {
+            foreach ($image as $field => $value) {
+                $config["{$side}_{$field}"] = $value;
+            }
+        }
+
+        return ['type' => 'customBlock', 'attrs' => ['id' => 'imageComparison', 'config' => $config]];
+    }
+
+    /**
      * @param  list<array<string, string>>  $items
      * @return array<string, mixed>
      */
@@ -286,6 +322,56 @@ class DemoArticleSeeder extends Seeder
         Storage::disk('public')->put(self::CONTRAST_IMAGE, $this->contrastImagePng());
         Storage::disk('public')->put(self::DIVIDER_IMAGE, $this->dividerImagePng());
         Storage::disk('public')->put(self::ZOOM_IMAGE, $this->zoomImagePng());
+        Storage::disk('public')->put(self::VISION_NORMAL_IMAGE, $this->toPng($this->eyeChartImage()));
+        Storage::disk('public')->put(self::VISION_CATARACT_IMAGE, $this->toPng($this->cataractSimulation($this->eyeChartImage())));
+    }
+
+    /**
+     * 800x500 eye chart: letter rows shrinking downwards, then red, blue and
+     * lime squares, dark grey on white.
+     */
+    private function eyeChartImage(): \GdImage
+    {
+        $image = imagecreatetruecolor(800, 500);
+        imagefill($image, 0, 0, (int) imagecolorallocate($image, 255, 255, 255));
+
+        $rows = [['E', 8, 20], ['F P', 5, 155], ['T O Z', 4, 245], ['L P E D', 3, 315], ['P E C F D', 2, 368]];
+
+        foreach ($rows as [$letters, $scale, $top]) {
+            $width = strlen($letters) * 9;
+            $text = imagecreatetruecolor($width, 15);
+            imagefill($text, 0, 0, (int) imagecolorallocate($text, 255, 255, 255));
+            imagestring($text, 5, 0, 0, $letters, (int) imagecolorallocate($text, 0x35, 0x35, 0x35));
+            imagecopyresized($image, $text, (int) ((800 - $width * $scale) / 2), $top, 0, 0, $width * $scale, 15 * $scale, $width, 15);
+        }
+
+        foreach ([[0xD7, 0x26, 0x26], [0x25, 0x63, 0xEB], [0xBE, 0xEF, 0x35]] as $index => [$red, $green, $blue]) {
+            $left = 220 + $index * 130;
+            imagefilledrectangle($image, $left, 410, $left + 100, 480, (int) imagecolorallocate($image, $red, $green, $blue));
+        }
+
+        return $image;
+    }
+
+    /**
+     * Approximate cataract on the 800x500 eye chart: heavy blur, lower
+     * contrast, a yellowish haze.
+     */
+    private function cataractSimulation(\GdImage $image): \GdImage
+    {
+        // Shrink to 1/10 and scale back up: a strong, cheap blur.
+        $small = imagecreatetruecolor(80, 50);
+        imagecopyresampled($small, $image, 0, 0, 0, 0, 80, 50, 800, 500);
+        imagecopyresampled($image, $small, 0, 0, 0, 0, 800, 500, 80, 50);
+
+        for ($pass = 0; $pass < 15; $pass++) {
+            imagefilter($image, IMG_FILTER_GAUSSIAN_BLUR);
+        }
+
+        imagefilter($image, IMG_FILTER_CONTRAST, 35);
+        imagefilter($image, IMG_FILTER_COLORIZE, 18, 10, -30);
+
+        return $image;
     }
 
     /**

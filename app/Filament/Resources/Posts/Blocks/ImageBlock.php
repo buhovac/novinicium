@@ -48,16 +48,7 @@ class ImageBlock extends PostContentBlock
         return $action
             ->modalDescription('Alt text describes the image for people who cannot see it. The caption is extra visible text.')
             ->schema([
-                FileUpload::make('path')
-                    ->label('Image')
-                    ->image()
-                    ->acceptedFileTypes(self::ACCEPTED_MIME_TYPES)
-                    ->maxSize(self::MAX_UPLOAD_KILOBYTES)
-                    ->disk('public')
-                    ->directory('images')
-                    ->visibility('public')
-                    ->required()
-                    ->helperText('JPEG, PNG, WebP or GIF, up to 5 MB.'),
+                self::uploadField('path'),
                 Toggle::make('decorative')
                     ->label('Decorative image')
                     ->helperText('Only for purely visual images that add no information. Screen readers will skip it.')
@@ -83,6 +74,25 @@ class ImageBlock extends PostContentBlock
                     ->default(ImageWidth::Standard->value)
                     ->required(),
             ]);
+    }
+
+    /**
+     * The one upload field for blog images (shared with ImageComparisonBlock):
+     * public disk, images/ folder, raster only (no SVG), 5 MB limit. Stored
+     * paths must still match PATH_PATTERN on the server.
+     */
+    public static function uploadField(string $name, string $label = 'Image'): FileUpload
+    {
+        return FileUpload::make($name)
+            ->label($label)
+            ->image()
+            ->acceptedFileTypes(self::ACCEPTED_MIME_TYPES)
+            ->maxSize(self::MAX_UPLOAD_KILOBYTES)
+            ->disk('public')
+            ->directory('images')
+            ->visibility('public')
+            ->required()
+            ->helperText('JPEG, PNG, WebP or GIF, up to 5 MB.');
     }
 
     public static function rules(): array
