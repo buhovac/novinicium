@@ -22,17 +22,28 @@
     --ni-white: #ffffff;
 }
 
-/* Visible focus for every interactive element on the public site.
-   2px dark ring + offset works on white, green and dark backgrounds. */
+/* Visible focus for every interactive element on the public site
+   (WCAG 2.4.7, and 3:1 against the surface for 1.4.11 / 2.4.11).
+   The ring sits 2px outside the element, so it must contrast with the
+   SURFACE behind it, not the element itself. The colour comes from
+   --ni-focus-ring, which surfaces set and descendants inherit:
+     light surfaces (white, lime, #E5E5E5 tints) → #353535 ring, ≥ 9.7:1
+     dark surfaces (.bg-dark, #353535)          → #BEEF35 ring,   8.2:1
+   Mark any dark section with .bg-dark (or a single element with .on-dark);
+   .bg-light restores the dark ring for a light card nested inside one. */
+.ni-site,
+.ni-site .bg-light {
+    --ni-focus-ring: var(--ni-gray);
+}
+.ni-site .bg-dark,
+.ni-site .on-dark {
+    --ni-focus-ring: var(--ni-green);
+}
 .ni-site
     :is(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-    outline: 3px solid var(--ni-gray);
+    outline: 3px solid var(--ni-focus-ring);
     outline-offset: 2px;
     border-radius: 4px;
-}
-.ni-site .on-dark:is(a, button):focus-visible,
-.ni-site .bg-dark :is(a, button):focus-visible {
-    outline-color: var(--ni-green);
 }
 
 /* Skip link: first tabbable element, visually hidden until focused. */
