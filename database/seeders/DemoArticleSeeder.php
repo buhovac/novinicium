@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Filament\Resources\Posts\Blocks\CalloutVariant;
+use App\Filament\Resources\Posts\Blocks\ChartType;
 use App\Filament\Resources\Posts\Blocks\CodeLanguage;
 use App\Filament\Resources\Posts\Blocks\ImageWidth;
 use App\Filament\Resources\Posts\Blocks\StatisticsLayout;
@@ -70,6 +71,23 @@ class DemoArticleSeeder extends Seeder
                 CalloutVariant::Information,
                 'At least 2.2 billion people',
                 "According to the World Health Organization's World report on vision (2019), at least 2.2 billion people globally have a near or distance vision impairment.",
+            ),
+
+            $this->paragraph('Most people with vision loss are not blind. A large study of the global burden of disease estimated how many people lived with each level of vision loss in 2020:'),
+            $this->chart(
+                ChartType::Bar,
+                title: 'Global vision loss by severity, 2020',
+                categoryHeading: 'Level of vision loss',
+                seriesName: 'People (estimate)',
+                rows: [
+                    'Blindness' => 43.3,
+                    'Moderate or severe distance vision impairment' => 295,
+                    'Mild distance vision impairment' => 258,
+                    'Near vision impairment (uncorrected presbyopia)' => 510,
+                ],
+                unit: 'million',
+                source: 'GBD 2019 Blindness and Vision Impairment Collaborators, The Lancet Global Health (2021)',
+                caption: 'Central estimates for 2020. These come from a different study than the WHO figure of at least 2.2 billion and use different definitions, so the numbers do not add up to it.',
             ),
 
             $this->heading(2, 'Common types'),
@@ -230,6 +248,43 @@ class DemoArticleSeeder extends Seeder
         }
 
         return ['type' => 'customBlock', 'attrs' => ['id' => 'imageComparison', 'config' => $config]];
+    }
+
+    /**
+     * Single-series chart; rows map category label => value.
+     *
+     * @param  array<string, int|float>  $rows
+     * @return array<string, mixed>
+     */
+    private function chart(
+        ChartType $type,
+        string $title,
+        string $categoryHeading,
+        string $seriesName,
+        array $rows,
+        ?string $unit = null,
+        ?string $source = null,
+        ?string $caption = null,
+    ): array {
+        return ['type' => 'customBlock', 'attrs' => [
+            'id' => 'chart',
+            'config' => [
+                'title' => $title,
+                'type' => $type->value,
+                'category_heading' => $categoryHeading,
+                'series_1' => $seriesName,
+                'series_2' => null,
+                'series_3' => null,
+                'rows' => array_map(
+                    fn (string $label, int|float $value): array => ['label' => $label, 'value_1' => $value],
+                    array_keys($rows),
+                    $rows,
+                ),
+                'unit' => $unit,
+                'source' => $source,
+                'caption' => $caption,
+            ],
+        ]];
     }
 
     /**

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ArticleCallout from '@/components/blog/ArticleCallout.vue';
+import ArticleChart from '@/components/blog/ArticleChart.vue';
 import ArticleCode from '@/components/blog/ArticleCode.vue';
 import ArticleColumns from '@/components/blog/ArticleColumns.vue';
 import ArticleImage from '@/components/blog/ArticleImage.vue';
@@ -68,4 +69,5 @@ defineProps<{
         v-else-if="node.type === 'imageComparison'"
         :node="node"
     />
+    <ArticleChart v-else-if="node.type === 'chart'" :node="node" />
 </template>

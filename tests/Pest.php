@@ -106,6 +106,14 @@ function renderBlogComponent(string $component, array $props): string
 }
 
 /**
+ * Collapse whitespace so assertions can target attribute/text sequences.
+ */
+function squish(string $html): string
+{
+    return trim((string) preg_replace('/\s+/', ' ', $html));
+}
+
+/**
  * @param  array<int|string, mixed>  $payload
  */
 function runBlogRenderer(array $payload): string

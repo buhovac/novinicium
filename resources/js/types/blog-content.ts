@@ -119,6 +119,28 @@ export type ImageComparisonNode = {
     caption: string | null;
 };
 
+/** Custom block: Chart (App\Filament\Resources\Posts\Blocks\ChartBlock). */
+export type ChartType = 'bar' | 'line' | 'pie' | 'doughnut';
+export type ChartSeries = {
+    name: string;
+    /** One number per category, in category order. */
+    values: number[];
+    /** The same values formatted with the unit, e.g. "43.3 million". */
+    display: string[];
+};
+export type ChartNode = {
+    type: 'chart';
+    chartType: ChartType;
+    title: string;
+    categoryHeading: string;
+    categories: string[];
+    /** Pie and doughnut always have exactly one series. */
+    series: ChartSeries[];
+    unit: string | null;
+    source: string | null;
+    caption: string | null;
+};
+
 export type BlockNode =
     | ParagraphNode
     | HeadingNode
@@ -132,4 +154,5 @@ export type BlockNode =
     | ImageBlockNode
     | CodeNode
     | StatisticsNode
-    | ImageComparisonNode;
+    | ImageComparisonNode
+    | ChartNode;

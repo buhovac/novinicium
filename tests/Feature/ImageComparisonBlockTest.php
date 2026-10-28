@@ -43,14 +43,6 @@ function normalizedComparison(array|string|null $config): ?array
     return app(BuildPostContent::class)->handle($post)[0] ?? null;
 }
 
-/**
- * Collapse whitespace so assertions can target attribute/text sequences.
- */
-function squish(string $html): string
-{
-    return trim((string) preg_replace('/\s+/', ' ', $html));
-}
-
 it('normalizes a valid comparison into a typed node', function () {
     expect(normalizedComparison(comparisonConfig()))->toBe([
         'type' => 'imageComparison',

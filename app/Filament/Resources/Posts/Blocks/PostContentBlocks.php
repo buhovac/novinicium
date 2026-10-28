@@ -20,6 +20,7 @@ class PostContentBlocks
             TableCaptionBlock::class,
             StatisticsBlock::class,
             ImageComparisonBlock::class,
+            ChartBlock::class,
         ];
     }
 

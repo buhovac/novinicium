@@ -660,3 +660,48 @@
     accent-color: var(--ni-gray);
     cursor: pointer;
 }
+
+/* ---- Blog chart ----
+ * The data table (.ni-table, shared with the Table block) is always shown;
+ * the canvas above it is a supplementary visual. Its box is sized by
+ * aspect-ratio (no fixed heights), so it reflows and Chart.js resizes into
+ * it. Caption/source in --ni-gray-light (7.0:1 on white).
+ */
+.ni-prose .ni-chart {
+    margin: 2rem 0;
+}
+.ni-prose .ni-chart-visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 1rem;
+}
+@media (min-width: 40rem) {
+    .ni-prose .ni-chart-visual {
+        aspect-ratio: 16 / 9;
+    }
+}
+.ni-prose
+    .ni-chart:is([data-chart-type='pie'], [data-chart-type='doughnut'])
+    .ni-chart-visual {
+    max-width: 28rem;
+    margin-inline: auto;
+    aspect-ratio: 1;
+}
+.ni-prose .ni-chart .ni-table {
+    margin: 0;
+}
+.ni-prose .ni-chart td {
+    font-variant-numeric: tabular-nums;
+}
+.ni-prose .ni-chart figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-chart-source {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+}
