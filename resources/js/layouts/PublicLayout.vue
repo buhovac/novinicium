@@ -252,7 +252,7 @@ onUnmounted(() => removeNavigateListener?.());
             <slot />
         </main>
 
-        <footer class="border-t-[3px] border-[var(--ni-green)] bg-[var(--ni-gray)] text-white">
+        <footer class="bg-dark border-t-[3px] border-[var(--ni-green)] bg-[var(--ni-gray)] text-white">
             <div class="mx-auto max-w-6xl px-6 py-14">
                 <div class="grid gap-10 md:grid-cols-3 lg:gap-16">
                     <!-- Company -->

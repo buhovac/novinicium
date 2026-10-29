@@ -22,17 +22,28 @@
     --ni-white: #ffffff;
 }
 
-/* Visible focus for every interactive element on the public site.
-   2px dark ring + offset works on white, green and dark backgrounds. */
+/* Visible focus for every interactive element on the public site
+   (WCAG 2.4.7, and 3:1 against the surface for 1.4.11 / 2.4.11).
+   The ring sits 2px outside the element, so it must contrast with the
+   SURFACE behind it, not the element itself. The colour comes from
+   --ni-focus-ring, which surfaces set and descendants inherit:
+     light surfaces (white, lime, #E5E5E5 tints) → #353535 ring, ≥ 9.7:1
+     dark surfaces (.bg-dark, #353535)          → #BEEF35 ring,   8.2:1
+   Mark any dark section with .bg-dark (or a single element with .on-dark);
+   .bg-light restores the dark ring for a light card nested inside one. */
+.ni-site,
+.ni-site .bg-light {
+    --ni-focus-ring: var(--ni-gray);
+}
+.ni-site .bg-dark,
+.ni-site .on-dark {
+    --ni-focus-ring: var(--ni-green);
+}
 .ni-site
     :is(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-    outline: 3px solid var(--ni-gray);
+    outline: 3px solid var(--ni-focus-ring);
     outline-offset: 2px;
     border-radius: 4px;
-}
-.ni-site .on-dark:is(a, button):focus-visible,
-.ni-site .bg-dark :is(a, button):focus-visible {
-    outline-color: var(--ni-green);
 }
 
 /* Skip link: first tabbable element, visually hidden until focused. */
@@ -127,6 +138,111 @@
     color: var(--ni-gray-light);
     margin: 1.5rem 0;
 }
+.ni-prose hr {
+    border: 0;
+    border-top: 1px solid var(--ni-gray-lightest);
+    margin: 2rem 0;
+}
+.ni-prose img {
+    max-width: 100%;
+    height: auto;
+}
+.ni-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--ni-gray-lightest);
+    border-radius: 0.25rem;
+    padding: 0.1em 0.3em;
+}
+.ni-prose pre {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--ni-gray);
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.ni-prose pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+}
+.ni-prose .ni-table {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+.ni-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+.ni-prose th,
+.ni-prose td {
+    border: 1px solid var(--ni-gray-lightest);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+}
+.ni-prose th {
+    font-weight: 600;
+}
+.ni-prose th p,
+.ni-prose td p {
+    margin-bottom: 0;
+}
+
+/* Native RichEditor grid (columns): stacked on small screens. */
+.ni-prose .ni-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+.ni-prose .ni-grid > * {
+    min-width: 0;
+}
+@media (min-width: 40rem) {
+    .ni-grid[data-from='sm'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='sm'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 48rem) {
+    .ni-grid[data-from='md'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='md'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 64rem) {
+    .ni-grid[data-from='lg'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='lg'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 80rem) {
+    .ni-grid[data-from='xl'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='xl'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
+@media (min-width: 96rem) {
+    .ni-grid[data-from='2xl'] {
+        grid-template-columns: repeat(var(--ni-grid-cols), minmax(0, 1fr));
+    }
+    .ni-grid[data-from='2xl'] > * {
+        grid-column: span var(--ni-grid-span) / span var(--ni-grid-span);
+    }
+}
 
 /* ---- Image with corner labels (blog/portfolio cards) ---- */
 .ni-media {
@@ -182,4 +298,583 @@
     font-weight: 600;
     padding: 0.25rem 0.6rem;
     border-radius: 0.4rem;
+}
+
+/* ---- Blog callout block ----
+ * Meaning comes from the visible label + icon, never colour alone.
+ * All callout text is --ni-gray (#353535): ≥ 9.7:1 (AAA) on every background
+ * below (worst case #E5E5E5). Lime is used only for borders and light tints.
+ * No transitions, so nothing to adapt for prefers-reduced-motion.
+ */
+.ni-prose .ni-callout {
+    margin: 1.75rem 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-left-width: 4px;
+    border-radius: 0.5rem;
+    background: var(--ni-white);
+    color: var(--ni-gray);
+}
+.ni-prose .ni-callout-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.5rem;
+    row-gap: 0.25rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+.ni-prose .ni-callout-icon {
+    align-self: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+.ni-prose .ni-callout-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.ni-prose .ni-callout-title {
+    font-weight: 600;
+}
+.ni-prose .ni-callout-text {
+    margin-bottom: 0.75rem;
+}
+.ni-prose .ni-callout-text:last-child {
+    margin-bottom: 0;
+}
+.ni-callout[data-variant='information'] {
+    border-left-color: var(--ni-gray-light);
+    background: color-mix(
+        in srgb,
+        var(--ni-gray-lightest) 35%,
+        var(--ni-white)
+    );
+}
+.ni-callout[data-variant='definition'] {
+    border-left-color: var(--ni-gray);
+}
+.ni-callout[data-variant='important'] {
+    border-left-color: var(--ni-green-dark);
+    background: color-mix(in srgb, var(--ni-green-light) 30%, var(--ni-white));
+}
+.ni-callout[data-variant='warning'] {
+    border-color: var(--ni-gray-lighter);
+    border-left-color: var(--ni-gray);
+    background: var(--ni-gray-lightest);
+}
+.ni-callout[data-variant='example'] {
+    border-style: dashed;
+    border-left-style: solid;
+    border-left-color: var(--ni-green-dark);
+}
+
+/* ---- Blog image block ----
+ * Only the image widens; the caption stays in the reading column.
+ * Wide/full use negative inline margins around the centred article column;
+ * the 3rem gutter keeps 100vw (which includes the scrollbar) from causing
+ * horizontal scrolling.
+ */
+.ni-prose .ni-figure {
+    margin: 2rem 0;
+}
+.ni-prose .ni-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+}
+.ni-prose .ni-figure[data-width='wide'] img {
+    --ni-figure-width: min(64rem, 100vw - 3rem);
+    width: var(--ni-figure-width);
+    max-width: none;
+    margin-inline: calc((100% - var(--ni-figure-width)) / 2);
+}
+.ni-prose .ni-figure[data-width='full'] img {
+    --ni-figure-width: calc(100vw - 3rem);
+    width: var(--ni-figure-width);
+    max-width: none;
+    margin-inline: calc((100% - var(--ni-figure-width)) / 2);
+}
+.ni-prose .ni-figure figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-figure-credit {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+}
+
+/* ---- Blog code block ----
+ * Bar: #353535 on #E5E5E5 (9.7:1); code: #FFFFFF on #353535 (12.6:1).
+ * The global #353535 focus ring stays visible on the light bar.
+ * No animation on the "Copied" feedback, so nothing to reduce for motion.
+ */
+.ni-prose .ni-code {
+    margin: 1.5rem 0;
+}
+.ni-prose .ni-code-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0.5rem 0.4rem 1rem;
+    border-radius: 0.75rem 0.75rem 0 0;
+    background: var(--ni-gray-lightest);
+    color: var(--ni-gray);
+}
+.ni-prose .ni-code-language {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.ni-prose .ni-code-copy {
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--ni-gray-light);
+    border-radius: 0.375rem;
+    background: var(--ni-white);
+    color: var(--ni-gray);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.ni-prose .ni-code pre {
+    margin: 0;
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+/* ---- Blog table caption ---- */
+.ni-prose .ni-table caption {
+    caption-side: top;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--ni-gray);
+}
+
+/* ---- Blog columns ----
+ * Wide/full images cannot break out of a column: they fill the column.
+ * No `order` or reversed flow anywhere, so DOM order = visual order.
+ */
+.ni-prose .ni-grid-column > :first-child {
+    margin-top: 0;
+}
+.ni-prose .ni-grid-column > :last-child {
+    margin-bottom: 0;
+}
+.ni-prose .ni-grid .ni-figure img {
+    width: 100%;
+    margin-inline: 0;
+}
+
+/* ---- Blog statistics ----
+ * Values in --ni-gray (12.6:1 on white), explanation/source in
+ * --ni-gray-light (7.0:1). Lime only as the top border accent.
+ * Stacked on narrow screens; columns from 40rem.
+ */
+.ni-prose .ni-stats {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+}
+@media (min-width: 40rem) {
+    .ni-prose .ni-stats[data-layout='two'] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ni-prose .ni-stats[data-layout='three'] {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+.ni-prose .ni-stat {
+    margin: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-top: 4px solid var(--ni-green);
+    border-radius: 0.5rem;
+    background: var(--ni-white);
+}
+.ni-prose .ni-stat p {
+    margin-bottom: 0;
+}
+.ni-prose .ni-stat-figure {
+    line-height: 1.4;
+}
+.ni-prose .ni-stat-value {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ni-gray);
+    overflow-wrap: anywhere;
+}
+.ni-prose .ni-stat-unit {
+    margin-left: 0.1em;
+    font-size: 0.6em;
+}
+.ni-prose .ni-stat-label {
+    display: block;
+    margin-top: 0.4rem;
+    font-weight: 600;
+}
+.ni-prose .ni-stat-explanation {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-stat-source {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ni-gray-light);
+}
+
+/* ---- Blog image comparison ----
+ * Baseline: two figures side by side from 40rem, stacked below. Labels and
+ * caption in --ni-gray / --ni-gray-light (12.6:1 / 7.0:1 on white).
+ * Slider view (optional, JS only): image tags are #FFFFFF on #353535
+ * (12.6:1); the range input gets the global focus ring and a 44px target.
+ * The reveal only animates when the reader has not asked for reduced motion.
+ */
+.ni-prose .ni-compare {
+    margin: 2rem 0;
+}
+.ni-prose .ni-compare-views {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.ni-prose .ni-compare-views button {
+    min-height: 2.75rem;
+    padding: 0.25rem 1rem;
+    border: 1px solid var(--ni-gray-light);
+    border-radius: 0.375rem;
+    background: var(--ni-white);
+    color: var(--ni-gray);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.ni-prose .ni-compare-views button[aria-pressed='true'] {
+    border-color: var(--ni-gray);
+    background: var(--ni-gray);
+    color: var(--ni-white);
+}
+.ni-prose .ni-compare-grid {
+    display: grid;
+    gap: 1rem;
+}
+@media (min-width: 40rem) {
+    .ni-prose .ni-compare-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+.ni-prose .ni-compare-item {
+    margin: 0;
+    min-width: 0;
+}
+.ni-prose .ni-compare img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+.ni-prose .ni-compare-item figcaption {
+    margin-top: 0.5rem;
+    font-weight: 600;
+    color: var(--ni-gray);
+}
+.ni-prose .ni-compare-caption {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-compare-stage {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+.ni-prose .ni-compare-stage img {
+    border-radius: 0;
+}
+.ni-prose .ni-compare-overlay {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-fit: cover;
+    clip-path: inset(0 calc(100% - var(--ni-compare-position)) 0 0);
+}
+.ni-prose .ni-compare-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--ni-compare-position);
+    width: 3px;
+    margin-left: -1.5px;
+    background: var(--ni-white);
+    box-shadow: 0 0 0 1px var(--ni-gray);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .ni-prose .ni-compare-overlay {
+        transition: clip-path 0.12s ease-out;
+    }
+    .ni-prose .ni-compare-divider {
+        transition: left 0.12s ease-out;
+    }
+}
+.ni-prose .ni-compare-tag {
+    position: absolute;
+    top: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.25rem;
+    background: var(--ni-gray);
+    color: var(--ni-white);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.ni-prose .ni-compare-tag[data-side='second'] {
+    left: 0.5rem;
+}
+.ni-prose .ni-compare-tag[data-side='first'] {
+    right: 0.5rem;
+}
+.ni-prose .ni-compare-label {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--ni-gray);
+}
+.ni-prose .ni-compare-range {
+    display: block;
+    width: 100%;
+    min-height: 2.75rem;
+    accent-color: var(--ni-gray);
+    cursor: pointer;
+}
+
+/* ---- Blog chart ----
+ * The data table (.ni-table, shared with the Table block) is always shown;
+ * the canvas above it is a supplementary visual. Its box is sized by
+ * aspect-ratio (no fixed heights), so it reflows and Chart.js resizes into
+ * it. Caption/source in --ni-gray-light (7.0:1 on white).
+ */
+.ni-prose .ni-chart {
+    margin: 2rem 0;
+}
+.ni-prose .ni-chart-visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 1rem;
+}
+@media (min-width: 40rem) {
+    .ni-prose .ni-chart-visual {
+        aspect-ratio: 16 / 9;
+    }
+}
+.ni-prose
+    .ni-chart:is([data-chart-type='pie'], [data-chart-type='doughnut'])
+    .ni-chart-visual {
+    max-width: 28rem;
+    margin-inline: auto;
+    aspect-ratio: 1;
+}
+.ni-prose .ni-chart .ni-table {
+    margin: 0;
+}
+.ni-prose .ni-chart td {
+    font-variant-numeric: tabular-nums;
+}
+.ni-prose .ni-chart figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-chart-source {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+}
+
+/* ---- Blog quiz ----
+ * All text --ni-gray on white or #E5E5E5 (≥ 9.7:1). The result is always
+ * text ("Correct." / "Not quite." + tags on the options); colour and border
+ * style only repeat it: solid --ni-green-dark accent for correct, dashed
+ * --ni-gray for incorrect, so the outcome survives greyscale too. Radios
+ * use --ni-gray (12.6:1) with ≥ 24px targets. The result fades in only
+ * without prefers-reduced-motion.
+ */
+.ni-prose .ni-quiz {
+    margin: 2rem 0;
+    padding: 1.25rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-top: 4px solid var(--ni-green);
+    border-radius: 0.5rem;
+}
+.ni-prose .ni-quiz-title {
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ni-gray);
+}
+.ni-prose .ni-quiz-question {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+.ni-prose .ni-quiz-question + .ni-quiz-question {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--ni-gray-lightest);
+}
+.ni-prose .ni-quiz-question legend {
+    margin-bottom: 0.75rem;
+    padding: 0;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--ni-gray);
+}
+.ni-prose .ni-quiz-number {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ni-gray-light);
+}
+.ni-prose .ni-quiz-options {
+    display: grid;
+    gap: 0.5rem;
+}
+.ni-prose .ni-quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-radius: 0.375rem;
+}
+.ni-prose .ni-quiz-option[data-result='correct'] {
+    border: 2px solid var(--ni-green-dark);
+}
+.ni-prose .ni-quiz-option[data-result='incorrect'] {
+    border: 2px dashed var(--ni-gray);
+}
+.ni-prose .ni-quiz-option input {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.2rem;
+    accent-color: var(--ni-gray);
+    cursor: pointer;
+}
+.ni-prose .ni-quiz-option label {
+    flex: 1;
+    min-height: 1.5rem;
+    line-height: 1.6;
+    cursor: pointer;
+}
+.ni-prose .ni-quiz-tag {
+    margin-left: 0.35rem;
+    font-weight: 700;
+}
+.ni-prose .ni-quiz-check {
+    min-height: 2.75rem;
+    margin-top: 1rem;
+    padding: 0.25rem 1.25rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: var(--ni-gray);
+    color: var(--ni-white);
+    font-weight: 600;
+    cursor: pointer;
+}
+.ni-prose .ni-quiz-result:not(:empty) {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid var(--ni-gray-light);
+    border-radius: 0.25rem;
+    background: var(--ni-gray-lightest);
+    color: var(--ni-gray);
+}
+.ni-prose .ni-quiz-result:has([data-result='correct']) {
+    border-left-color: var(--ni-green-dark);
+}
+.ni-prose .ni-quiz-result p {
+    margin-bottom: 0.5rem;
+}
+.ni-prose .ni-quiz-result p:last-child {
+    margin-bottom: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .ni-prose .ni-quiz-result > * {
+        animation: ni-quiz-reveal 0.2s ease-out;
+    }
+}
+@keyframes ni-quiz-reveal {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ---- Blog table of contents ----
+ * Native <details>: the summary is the keyboard control and gets the
+ * global focus ring. Links are --ni-gray, underlined (12.6:1 on white).
+ * Jumps to a heading leave a little room above it, and scroll smoothly
+ * only when the reader has not asked for reduced motion.
+ */
+.ni-toc {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-left: 4px solid var(--ni-green);
+    border-radius: 0.5rem;
+    color: var(--ni-gray);
+}
+.ni-toc summary {
+    min-height: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.ni-toc nav {
+    margin-top: 0.75rem;
+}
+.ni-toc ol {
+    margin: 0;
+    padding-left: 1.25rem;
+    list-style: decimal;
+}
+.ni-toc ol ol {
+    margin-top: 0.25rem;
+    list-style: lower-alpha;
+}
+.ni-toc li {
+    margin: 0.35rem 0;
+    line-height: 1.5;
+}
+.ni-toc a {
+    color: var(--ni-gray);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.ni-prose :is(h2, h3)[id] {
+    scroll-margin-top: 1.5rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.ni-site) {
+        scroll-behavior: smooth;
+    }
 }
