@@ -5,6 +5,7 @@ import ArticleCode from '@/components/blog/ArticleCode.vue';
 import ArticleColumns from '@/components/blog/ArticleColumns.vue';
 import ArticleImage from '@/components/blog/ArticleImage.vue';
 import ArticleImageComparison from '@/components/blog/ArticleImageComparison.vue';
+import ArticleQuiz from '@/components/blog/ArticleQuiz.vue';
 import ArticleStatistics from '@/components/blog/ArticleStatistics.vue';
 import ArticleTable from '@/components/blog/ArticleTable.vue';
 import InlineContent from '@/components/blog/InlineContent.vue';
@@ -70,4 +71,5 @@ defineProps<{
         :node="node"
     />
     <ArticleChart v-else-if="node.type === 'chart'" :node="node" />
+    <ArticleQuiz v-else-if="node.type === 'quiz'" :node="node" />
 </template>

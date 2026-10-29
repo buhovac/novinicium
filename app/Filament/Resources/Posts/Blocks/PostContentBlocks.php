@@ -21,6 +21,7 @@ class PostContentBlocks
             StatisticsBlock::class,
             ImageComparisonBlock::class,
             ChartBlock::class,
+            QuizBlock::class,
         ];
     }
 

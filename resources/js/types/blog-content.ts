@@ -141,6 +141,23 @@ export type ChartNode = {
     caption: string | null;
 };
 
+/** Custom block: Quiz (App\Filament\Resources\Posts\Blocks\QuizBlock). */
+export type QuizQuestionNode = {
+    question: string;
+    /** Plain text, 2–6 options. */
+    options: string[];
+    /** Public by design: a self-check, not an exam. */
+    correctIndex: number;
+    explanation: string;
+};
+export type QuizNode = {
+    type: 'quiz';
+    title: string | null;
+    questions: QuizQuestionNode[];
+};
+/** Per-question state, kept in the browser only. */
+export type QuizQuestionStatus = 'open' | 'needsAnswer' | 'checked';
+
 export type BlockNode =
     | ParagraphNode
     | HeadingNode
@@ -155,4 +172,5 @@ export type BlockNode =
     | CodeNode
     | StatisticsNode
     | ImageComparisonNode
-    | ChartNode;
+    | ChartNode
+    | QuizNode;

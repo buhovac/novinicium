@@ -189,6 +189,27 @@ class DemoArticleSeeder extends Seeder
                     ['Controls that only work with a mouse', 'Screen reader and keyboard users', 'Full keyboard operation with visible focus (WCAG 2.1.1, 2.4.7)'],
                 ],
             ),
+
+            $this->quiz('Check your understanding', [
+                [
+                    'question' => 'Which WCAG 2.1 success criterion says colour must not be the only visual means of conveying information?',
+                    'options' => ['1.4.3 Contrast (Minimum)', '1.4.1 Use of Color', '1.1.1 Non-text Content', '2.4.7 Focus Visible'],
+                    'correct' => 1,
+                    'explanation' => 'Success criterion 1.4.1 Use of Color (level A) covers this. 1.4.3 is about text contrast, 1.1.1 about text alternatives and 2.4.7 about a visible keyboard focus.',
+                ],
+                [
+                    'question' => 'What minimum contrast ratio does WCAG 2.1 level AA require for normal-size text?',
+                    'options' => ['3:1', '4.5:1', '7:1'],
+                    'correct' => 1,
+                    'explanation' => 'Success criterion 1.4.3 requires at least 4.5:1 for normal text. Large text needs at least 3:1, and 7:1 is the stricter level AAA target of success criterion 1.4.6.',
+                ],
+                [
+                    'question' => 'What alt text should a purely decorative image have?',
+                    'options' => ['A description of what it shows', 'An empty alt attribute (alt="")', 'No alt attribute at all'],
+                    'correct' => 1,
+                    'explanation' => 'An empty alt attribute tells screen readers to skip the image. Without any alt attribute, many screen readers read out the file name instead.',
+                ],
+            ]),
         ]];
     }
 
@@ -283,6 +304,29 @@ class DemoArticleSeeder extends Seeder
                 'unit' => $unit,
                 'source' => $source,
                 'caption' => $caption,
+            ],
+        ]];
+    }
+
+    /**
+     * @param  list<array{question: string, options: list<string>, correct: int, explanation: string}>  $questions
+     * @return array<string, mixed>
+     */
+    private function quiz(string $title, array $questions): array
+    {
+        return ['type' => 'customBlock', 'attrs' => [
+            'id' => 'quiz',
+            'config' => [
+                'title' => $title,
+                'questions' => array_map(fn (array $question): array => [
+                    'question' => $question['question'],
+                    'options' => array_map(
+                        fn (string $text, int $index): array => ['text' => $text, 'correct' => $index === $question['correct']],
+                        $question['options'],
+                        array_keys($question['options']),
+                    ),
+                    'explanation' => $question['explanation'],
+                ], $questions),
             ],
         ]];
     }
