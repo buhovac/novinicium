@@ -112,7 +112,7 @@ describe('legacy parity', function () {
         ])]);
 
         expect(app(BuildPostContent::class)->handle($post))->toBe([
-            ['type' => 'heading', 'level' => 2, 'content' => [text('Section')]],
+            ['type' => 'heading', 'level' => 2, 'content' => [text('Section')], 'id' => 'section'],
             ['type' => 'paragraph', 'content' => [
                 text('Bold', [['type' => 'bold']]),
                 text(' and '),
@@ -121,7 +121,7 @@ describe('legacy parity', function () {
                 text('a link', [['type' => 'link', 'href' => 'https://example.com', 'newTab' => true]]),
                 text('.'),
             ]],
-            ['type' => 'heading', 'level' => 3, 'content' => [text('Sub')]],
+            ['type' => 'heading', 'level' => 3, 'content' => [text('Sub')], 'id' => 'sub'],
             ['type' => 'bulletList', 'content' => [
                 ['type' => 'listItem', 'content' => [['type' => 'paragraph', 'content' => [text('One')]]]],
                 ['type' => 'listItem', 'content' => [['type' => 'paragraph', 'content' => [text('Two')]]]],
@@ -171,7 +171,7 @@ describe('headings', function () {
         ])]);
 
         expect(app(BuildPostContent::class)->handle($post))
-            ->toBe([['type' => 'heading', 'level' => 2, 'content' => [text('T')]]]);
+            ->toBe([['type' => 'heading', 'level' => 2, 'content' => [text('T')], 'id' => 't']]);
     });
 });
 

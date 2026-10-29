@@ -830,3 +830,51 @@
         opacity: 1;
     }
 }
+
+/* ---- Blog table of contents ----
+ * Native <details>: the summary is the keyboard control and gets the
+ * global focus ring. Links are --ni-gray, underlined (12.6:1 on white).
+ * Jumps to a heading leave a little room above it, and scroll smoothly
+ * only when the reader has not asked for reduced motion.
+ */
+.ni-toc {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--ni-gray-lightest);
+    border-left: 4px solid var(--ni-green);
+    border-radius: 0.5rem;
+    color: var(--ni-gray);
+}
+.ni-toc summary {
+    min-height: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.ni-toc nav {
+    margin-top: 0.75rem;
+}
+.ni-toc ol {
+    margin: 0;
+    padding-left: 1.25rem;
+    list-style: decimal;
+}
+.ni-toc ol ol {
+    margin-top: 0.25rem;
+    list-style: lower-alpha;
+}
+.ni-toc li {
+    margin: 0.35rem 0;
+    line-height: 1.5;
+}
+.ni-toc a {
+    color: var(--ni-gray);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.ni-prose :is(h2, h3)[id] {
+    scroll-margin-top: 1.5rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.ni-site) {
+        scroll-behavior: smooth;
+    }
+}

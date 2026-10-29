@@ -21,6 +21,8 @@ export type HeadingNode = {
     type: 'heading';
     level: 2 | 3;
     content: InlineNode[];
+    /** Stable, unique anchor (App\Actions\Blog\ArticleOutline). */
+    id: string;
 };
 export type ListItemNode = { type: 'listItem'; content: BlockNode[] };
 export type BulletListNode = { type: 'bulletList'; content: ListItemNode[] };
@@ -174,3 +176,11 @@ export type BlockNode =
     | ImageComparisonNode
     | ChartNode
     | QuizNode;
+
+/** Table of contents entry (App\Actions\Blog\ArticleOutline::tableOfContents). */
+export type TocEntry = {
+    id: string;
+    text: string;
+    level: 2 | 3;
+    children: TocEntry[];
+};

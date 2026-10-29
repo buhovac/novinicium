@@ -12,6 +12,7 @@ use Filament\Forms\Components\RichEditor\RichContentRenderer;
  * whitelisted, typed node tree rendered by <BlogContent> on the public site.
  *
  * Only known node types and attributes survive; everything else is dropped.
+ * Headings also get an `id` for anchors and the table of contents.
  * The output never contains HTML strings, so the frontend never needs v-html.
  * Mirrors the TypeScript model in resources/js/types/blog-content.ts.
  *
@@ -24,6 +25,8 @@ class BuildPostContent
     private const ALLOWED_MARKS = ['bold', 'italic', 'code', 'link'];
 
     private const GRID_BREAKPOINTS = ['sm', 'md', 'lg', 'xl', '2xl'];
+
+    public function __construct(private ArticleOutline $outline) {}
 
     /**
      * @return list<Node>
@@ -39,7 +42,8 @@ class BuildPostContent
      */
     public function fromDocument(array $document): array
     {
-        return $this->blocks($document['content'] ?? []);
+        // Headings get stable, unique anchor IDs (see ArticleOutline).
+        return $this->outline->withHeadingIds($this->blocks($document['content'] ?? []));
     }
 
     /**

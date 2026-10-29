@@ -22,7 +22,11 @@ defineProps<{
         <InlineContent :nodes="node.content" />
     </p>
 
-    <component :is="`h${node.level}`" v-else-if="node.type === 'heading'">
+    <component
+        :is="`h${node.level}`"
+        v-else-if="node.type === 'heading'"
+        :id="node.id"
+    >
         <InlineContent :nodes="node.content" />
     </component>
 

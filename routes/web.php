@@ -11,6 +11,10 @@ Route::inertia('/', 'Home')->name('home');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
+// Admin-only preview of drafts/scheduled posts (same renderer, never indexed).
+Route::get('/blog/{post:slug}/preview', [BlogController::class, 'preview'])
+    ->middleware(['auth', 'can:preview-posts'])
+    ->name('blog.preview');
 
 Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
 Route::get('/portfolio/{project:slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
